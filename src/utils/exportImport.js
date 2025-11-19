@@ -10,6 +10,7 @@ export const exportUserData = (userId) => {
     userId: userId,
     bills: localStorage.getItem(`ev_yonetimi_bills_${userId}`),
     expenses: localStorage.getItem(`ev_yonetimi_expenses_${userId}`),
+    incomes: localStorage.getItem(`ev_yonetimi_incomes_${userId}`),
     todos: localStorage.getItem(`ev_yonetimi_todos_${userId}`),
     shopping: localStorage.getItem(`ev_yonetimi_shopping_${userId}`)
   };
@@ -50,6 +51,9 @@ export const importUserData = (file, userId) => {
         if (data.expenses) {
           localStorage.setItem(`ev_yonetimi_expenses_${userId}`, data.expenses);
         }
+        if (data.incomes) {
+          localStorage.setItem(`ev_yonetimi_incomes_${userId}`, data.incomes);
+        }
         if (data.todos) {
           localStorage.setItem(`ev_yonetimi_todos_${userId}`, data.todos);
         }
@@ -63,6 +67,7 @@ export const importUserData = (file, userId) => {
           itemCount: {
             bills: data.bills ? JSON.parse(data.bills).length : 0,
             expenses: data.expenses ? JSON.parse(data.expenses).length : 0,
+            incomes: data.incomes ? JSON.parse(data.incomes).length : 0,
             todos: data.todos ? JSON.parse(data.todos).length : 0,
             shopping: data.shopping ? JSON.parse(data.shopping).length : 0
           }
@@ -86,6 +91,7 @@ export const importUserData = (file, userId) => {
 export const clearAllUserData = (userId) => {
   localStorage.removeItem(`ev_yonetimi_bills_${userId}`);
   localStorage.removeItem(`ev_yonetimi_expenses_${userId}`);
+  localStorage.removeItem(`ev_yonetimi_incomes_${userId}`);
   localStorage.removeItem(`ev_yonetimi_todos_${userId}`);
   localStorage.removeItem(`ev_yonetimi_shopping_${userId}`);
 };
@@ -96,17 +102,20 @@ export const clearAllUserData = (userId) => {
 export const getUserDataStats = (userId) => {
   const bills = localStorage.getItem(`ev_yonetimi_bills_${userId}`);
   const expenses = localStorage.getItem(`ev_yonetimi_expenses_${userId}`);
+  const incomes = localStorage.getItem(`ev_yonetimi_incomes_${userId}`);
   const todos = localStorage.getItem(`ev_yonetimi_todos_${userId}`);
   const shopping = localStorage.getItem(`ev_yonetimi_shopping_${userId}`);
 
   return {
     bills: bills ? JSON.parse(bills).length : 0,
     expenses: expenses ? JSON.parse(expenses).length : 0,
+    incomes: incomes ? JSON.parse(incomes).length : 0,
     todos: todos ? JSON.parse(todos).length : 0,
     shopping: shopping ? JSON.parse(shopping).length : 0,
     total: 
       (bills ? JSON.parse(bills).length : 0) +
       (expenses ? JSON.parse(expenses).length : 0) +
+      (incomes ? JSON.parse(incomes).length : 0) +
       (todos ? JSON.parse(todos).length : 0) +
       (shopping ? JSON.parse(shopping).length : 0)
   };

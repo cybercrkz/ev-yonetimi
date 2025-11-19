@@ -228,3 +228,46 @@ export const deleteShoppingItem = (userId, itemId) => {
   localStorage.setItem(key, JSON.stringify(filtered));
 };
 
+// Gelirler
+export const getIncomes = (userId) => {
+  const key = `ev_yonetimi_incomes_${userId}`;
+  const incomes = localStorage.getItem(key);
+  return incomes ? JSON.parse(incomes) : [];
+};
+
+export const saveIncome = (userId, income) => {
+  const key = `ev_yonetimi_incomes_${userId}`;
+  const incomes = getIncomes(userId);
+  
+  const newIncome = {
+    id: Date.now().toString(),
+    ...income,
+    createdAt: new Date().toISOString()
+  };
+  
+  incomes.push(newIncome);
+  localStorage.setItem(key, JSON.stringify(incomes));
+  return newIncome;
+};
+
+export const updateIncome = (userId, incomeId, updates) => {
+  const key = `ev_yonetimi_incomes_${userId}`;
+  const incomes = getIncomes(userId);
+  const index = incomes.findIndex(i => i.id === incomeId);
+  
+  if (index === -1) {
+    throw new Error('Gelir bulunamadı');
+  }
+  
+  incomes[index] = { ...incomes[index], ...updates, updatedAt: new Date().toISOString() };
+  localStorage.setItem(key, JSON.stringify(incomes));
+  return incomes[index];
+};
+
+export const deleteIncome = (userId, incomeId) => {
+  const key = `ev_yonetimi_incomes_${userId}`;
+  const incomes = getIncomes(userId);
+  const filtered = incomes.filter(i => i.id !== incomeId);
+  localStorage.setItem(key, JSON.stringify(filtered));
+};
+

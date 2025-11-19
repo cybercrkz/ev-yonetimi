@@ -12,6 +12,7 @@ import Todo from './pages/Todo';
 import Shopping from './pages/Shopping';
 import Bills from './pages/Bills';
 import Expenses from './pages/Expenses';
+import Income from './pages/Income';
 import Home from './pages/Home';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '@fortawesome/fontawesome-free/css/all.min.css';
@@ -87,6 +88,14 @@ function App() {
                 element={
                   <ProtectedRoute>
                     <Expenses />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/income"
+                element={
+                  <ProtectedRoute>
+                    <Income />
                   </ProtectedRoute>
                 }
               />

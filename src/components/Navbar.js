@@ -67,6 +67,11 @@ const Navbar = () => {
                   <i className="fas fa-wallet me-1"></i>Giderler
                 </Link>
               </li>
+              <li className="nav-item">
+                <Link className="nav-link" to="/income">
+                  <i className="fas fa-money-bill-wave me-1"></i>Gelirler
+                </Link>
+              </li>
             </ul>
           )}
           <ul className="navbar-nav">
