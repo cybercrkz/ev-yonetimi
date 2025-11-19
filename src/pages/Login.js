@@ -35,7 +35,7 @@ const Login = () => {
                 <i className="fas fa-home fa-2x text-primary me-2"></i>
                 <h3 className="fw-bold mb-0 text-primary">Ev Yönetimi</h3>
               </div>
-              <h2 className="fw-bold mb-2">Tekrar Hoş Geldiniz! 👋</h2>
+              <h2 className="fw-bold mb-2">Tekrar Hoş Geldiniz!</h2>
               <p className="text-muted">Lütfen hesabınıza giriş yapın</p>
             </div>
 
