@@ -1,0 +1,4 @@
+
+> cans@0.1.0 start:server
+> node server/index.js
+

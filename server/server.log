@@ -1,0 +1,5 @@
+
+> cans@0.1.0 start:server
+> node server/index.js
+
+Local auth/DB server running on http://localhost:54321
