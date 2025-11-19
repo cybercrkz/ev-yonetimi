@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useAuth } from '../context/AuthContext';
-import { getBills, getExpenses, getTodos, getShoppingItems } from '../utils/localStorage';
+import { getBills, getExpenses, getIncomes, getTodos, getShoppingItems } from '../utils/localStorage';
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js';
 import { Doughnut } from 'react-chartjs-2';
 
@@ -12,6 +12,7 @@ const Home = () => {
   const [stats, setStats] = useState({
     bills: { total: 0, paid: 0, pending: 0 },
     expenses: { total: 0, categories: {} },
+    incomes: { total: 0, categories: {} },
     todos: { total: 0, completed: 0, pending: 0 },
     shoppingItems: { total: 0, completed: 0, pending: 0 }
   });
@@ -59,6 +60,14 @@ const Home = () => {
         return acc;
       }, { total: 0, categories: {} });
 
+      // Gelirler istatistikleri
+      const allIncomes = getIncomes(user.id);
+      const incomesStats = allIncomes.reduce((acc, income) => {
+        acc.total += income.amount;
+        acc.categories[income.category] = (acc.categories[income.category] || 0) + income.amount;
+        return acc;
+      }, { total: 0, categories: {} });
+
       // Yapılacaklar istatistikleri
       const allTodos = getTodos(user.id);
       const todosStats = allTodos.reduce((acc, todo) => {
@@ -86,6 +95,7 @@ const Home = () => {
       setStats({
         bills: billsStats,
         expenses: expensesStats,
+        incomes: incomesStats,
         todos: todosStats,
         shoppingItems: shoppingStats
       });
@@ -164,16 +174,42 @@ const Home = () => {
           </div>
         </div>
 
+        {/* Gelirler Özeti */}
+        <div className="col-md-6 col-lg-3">
+          <div className="card shadow h-100">
+            <div className="card-body">
+              <div className="d-flex justify-content-between align-items-center mb-3">
+                <h6 className="card-title mb-0">Gelirler</h6>
+                <i className="fas fa-money-bill-wave fs-4 text-success"></i>
+              </div>
+              <div className="mb-2">
+                <span className="fs-4 fw-bold text-success">
+                  {stats.incomes.total.toLocaleString('tr-TR', { style: 'currency', currency: 'TRY' })}
+                </span>
+                <span className="text-muted ms-2">Toplam</span>
+              </div>
+              <div className="small">
+                {Object.entries(stats.incomes.categories).slice(0, 3).map(([category, amount]) => (
+                  <div key={category} className="d-flex justify-content-between mb-1">
+                    <span>{category}</span>
+                    <span>{amount.toLocaleString('tr-TR', { style: 'currency', currency: 'TRY' })}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+
         {/* Giderler Özeti */}
         <div className="col-md-6 col-lg-3">
           <div className="card shadow h-100">
             <div className="card-body">
               <div className="d-flex justify-content-between align-items-center mb-3">
                 <h6 className="card-title mb-0">Giderler</h6>
-                <i className="fas fa-wallet fs-4 text-success"></i>
+                <i className="fas fa-wallet fs-4 text-danger"></i>
               </div>
               <div className="mb-2">
-                <span className="fs-4 fw-bold text-success">
+                <span className="fs-4 fw-bold text-danger">
                   {stats.expenses.total.toLocaleString('tr-TR', { style: 'currency', currency: 'TRY' })}
                 </span>
                 <span className="text-muted ms-2">Toplam</span>
@@ -185,6 +221,40 @@ const Home = () => {
                     <span>{amount.toLocaleString('tr-TR', { style: 'currency', currency: 'TRY' })}</span>
                   </div>
                 ))}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Net Bakiye */}
+        <div className="col-md-6 col-lg-3">
+          <div className="card shadow h-100">
+            <div className="card-body">
+              <div className="d-flex justify-content-between align-items-center mb-3">
+                <h6 className="card-title mb-0">Net Bakiye</h6>
+                <i className="fas fa-balance-scale fs-4 text-info"></i>
+              </div>
+              <div className="mb-2">
+                <span className={`fs-4 fw-bold ${stats.incomes.total - stats.expenses.total >= 0 ? 'text-success' : 'text-danger'}`}>
+                  {(stats.incomes.total - stats.expenses.total).toLocaleString('tr-TR', { style: 'currency', currency: 'TRY' })}
+                </span>
+                <span className="text-muted ms-2">Gelir - Gider</span>
+              </div>
+              <div className="d-flex justify-content-between">
+                <div>
+                  <span className="text-success">
+                    {stats.incomes.total.toLocaleString('tr-TR', { style: 'currency', currency: 'TRY' })}
+                  </span>
+                  <br />
+                  <small className="text-muted">Gelir</small>
+                </div>
+                <div className="text-end">
+                  <span className="text-danger">
+                    {stats.expenses.total.toLocaleString('tr-TR', { style: 'currency', currency: 'TRY' })}
+                  </span>
+                  <br />
+                  <small className="text-muted">Gider</small>
+                </div>
               </div>
             </div>
           </div>
