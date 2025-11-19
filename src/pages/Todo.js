@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useAuth } from '../context/AuthContext';
-import { supabase } from '../supabaseClient';
+import { getTodos, saveTodo, updateTodo, deleteTodo as deleteTodoLS } from '../utils/localStorage';
+import { toast } from 'react-toastify';
 
 const Todo = () => {
   const { user } = useAuth();
@@ -12,19 +13,16 @@ const Todo = () => {
     due_date: ''
   });
 
-  const fetchTodos = useCallback(async () => {
+  const fetchTodos = useCallback(() => {
     try {
       setLoading(true);
-      const { data, error } = await supabase
-        .from('todos')
-        .select('*')
-        .eq('user_id', user.id)
-        .order('created_at', { ascending: false });
-
-      if (error) throw error;
-      setTodos(data || []);
+      if (user) {
+        const data = getTodos(user.id);
+        setTodos(data || []);
+      }
     } catch (error) {
       console.error('Yapılacaklar listesi getirilirken hata:', error.message);
+      toast.error('Yapılacaklar yüklenirken hata oluştu');
     } finally {
       setLoading(false);
     }
@@ -40,60 +38,46 @@ const Todo = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const { data, error } = await supabase
-        .from('todos')
-        .insert([
-          {
-            user_id: user.id,
-            title: newTodo.title,
-            description: newTodo.description,
-            due_date: newTodo.due_date || null,
-            status: 'pending'
-          }
-        ])
-        .select();
+      const newTodoData = {
+        title: newTodo.title,
+        description: newTodo.description,
+        due_date: newTodo.due_date || null
+      };
 
-      if (error) throw error;
-
-      setTodos([data[0], ...todos]);
+      const savedTodo = saveTodo(user.id, newTodoData);
+      setTodos([savedTodo, ...todos]);
       setNewTodo({ title: '', description: '', due_date: '' });
+      toast.success('Yapılacak eklendi');
     } catch (error) {
       console.error('Yapılacak eklenirken hata:', error.message);
+      toast.error('Yapılacak eklenirken hata oluştu');
     }
   };
 
   // Yapılacak durumunu güncelle
   const toggleStatus = async (todo) => {
     try {
-      const newStatus = todo.status === 'completed' ? 'pending' : 'completed';
-      const { error } = await supabase
-        .from('todos')
-        .update({ status: newStatus })
-        .eq('id', todo.id);
-
-      if (error) throw error;
+      const newCompleted = !todo.completed;
+      updateTodo(user.id, todo.id, { completed: newCompleted });
 
       setTodos(todos.map(t => 
-        t.id === todo.id ? { ...t, status: newStatus } : t
+        t.id === todo.id ? { ...t, completed: newCompleted } : t
       ));
     } catch (error) {
       console.error('Durum güncellenirken hata:', error.message);
+      toast.error('Durum güncellenirken hata oluştu');
     }
   };
 
   // Yapılacak sil
-  const deleteTodo = async (id) => {
+  const deleteTodoHandler = async (id) => {
     try {
-      const { error } = await supabase
-        .from('todos')
-        .delete()
-        .eq('id', id);
-
-      if (error) throw error;
-
+      deleteTodoLS(user.id, id);
       setTodos(todos.filter(t => t.id !== id));
+      toast.success('Yapılacak silindi');
     } catch (error) {
       console.error('Yapılacak silinirken hata:', error.message);
+      toast.error('Yapılacak silinirken hata oluştu');
     }
   };
 
@@ -173,7 +157,7 @@ const Todo = () => {
                         <input
                           className="form-check-input"
                           type="checkbox"
-                          checked={todo.status === 'completed'}
+                          checked={todo.completed}
                           onChange={() => toggleStatus(todo)}
                           id={`todo-${todo.id}`}
                         />
@@ -181,7 +165,7 @@ const Todo = () => {
                           className="form-check-label ms-2"
                           htmlFor={`todo-${todo.id}`}
                           style={{
-                            textDecoration: todo.status === 'completed' ? 'line-through' : 'none'
+                            textDecoration: todo.completed ? 'line-through' : 'none'
                           }}
                         >
                           <div className="fw-bold">{todo.title}</div>
@@ -198,7 +182,7 @@ const Todo = () => {
                       </div>
                       <button
                         className="btn btn-sm btn-outline-danger ms-2"
-                        onClick={() => deleteTodo(todo.id)}
+                        onClick={() => deleteTodoHandler(todo.id)}
                       >
                         <i className="fas fa-trash"></i>
                       </button>
@@ -214,4 +198,4 @@ const Todo = () => {
   );
 };
 
-export default Todo; 
+export default Todo;

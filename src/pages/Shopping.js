@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useAuth } from '../context/AuthContext';
-import { supabase } from '../supabaseClient';
+import { getShoppingItems, saveShoppingItem, updateShoppingItem, deleteShoppingItem } from '../utils/localStorage';
+import { toast } from 'react-toastify';
 
 const Shopping = () => {
   const { user } = useAuth();
@@ -23,19 +24,16 @@ const Shopping = () => {
     'Diğer'
   ];
 
-  const fetchItems = useCallback(async () => {
+  const fetchItems = useCallback(() => {
     try {
       setLoading(true);
-      const { data, error } = await supabase
-        .from('shopping_items')
-        .select('*')
-        .eq('user_id', user.id)
-        .order('created_at', { ascending: false });
-
-      if (error) throw error;
-      setItems(data || []);
+      if (user) {
+        const data = getShoppingItems(user.id);
+        setItems(data || []);
+      }
     } catch (error) {
       console.error('Market listesi getirilirken hata:', error.message);
+      toast.error('Market listesi yüklenirken hata oluştu');
     } finally {
       setLoading(false);
     }
@@ -51,60 +49,46 @@ const Shopping = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const { data, error } = await supabase
-        .from('shopping_items')
-        .insert([
-          {
-            user_id: user.id,
-            item_name: newItem.item_name,
-            quantity: newItem.quantity,
-            category: newItem.category || 'Diğer',
-            status: 'pending'
-          }
-        ])
-        .select();
+      const newItemData = {
+        item_name: newItem.item_name,
+        quantity: newItem.quantity,
+        category: newItem.category || 'Diğer'
+      };
 
-      if (error) throw error;
-
-      setItems([data[0], ...items]);
+      const savedItem = saveShoppingItem(user.id, newItemData);
+      setItems([savedItem, ...items]);
       setNewItem({ item_name: '', quantity: 1, category: '' });
+      toast.success('Ürün eklendi');
     } catch (error) {
       console.error('Ürün eklenirken hata:', error.message);
+      toast.error('Ürün eklenirken hata oluştu');
     }
   };
 
   // Ürün durumunu güncelle
   const toggleStatus = async (item) => {
     try {
-      const newStatus = item.status === 'completed' ? 'pending' : 'completed';
-      const { error } = await supabase
-        .from('shopping_items')
-        .update({ status: newStatus })
-        .eq('id', item.id);
-
-      if (error) throw error;
+      const newCompleted = !item.completed;
+      updateShoppingItem(user.id, item.id, { completed: newCompleted });
 
       setItems(items.map(i => 
-        i.id === item.id ? { ...i, status: newStatus } : i
+        i.id === item.id ? { ...i, completed: newCompleted } : i
       ));
     } catch (error) {
       console.error('Durum güncellenirken hata:', error.message);
+      toast.error('Durum güncellenirken hata oluştu');
     }
   };
 
   // Ürün sil
-  const deleteItem = async (id) => {
+  const deleteItemHandler = async (id) => {
     try {
-      const { error } = await supabase
-        .from('shopping_items')
-        .delete()
-        .eq('id', id);
-
-      if (error) throw error;
-
+      deleteShoppingItem(user.id, id);
       setItems(items.filter(i => i.id !== id));
+      toast.success('Ürün silindi');
     } catch (error) {
       console.error('Ürün silinirken hata:', error.message);
+      toast.error('Ürün silinirken hata oluştu');
     }
   };
 
@@ -112,18 +96,14 @@ const Shopping = () => {
   const updateQuantity = async (item, change) => {
     const newQuantity = Math.max(1, item.quantity + change);
     try {
-      const { error } = await supabase
-        .from('shopping_items')
-        .update({ quantity: newQuantity })
-        .eq('id', item.id);
-
-      if (error) throw error;
+      updateShoppingItem(user.id, item.id, { quantity: newQuantity });
 
       setItems(items.map(i => 
         i.id === item.id ? { ...i, quantity: newQuantity } : i
       ));
     } catch (error) {
       console.error('Miktar güncellenirken hata:', error.message);
+      toast.error('Miktar güncellenirken hata oluştu');
     }
   };
 
@@ -223,7 +203,7 @@ const Shopping = () => {
                             <input
                               className="form-check-input"
                               type="checkbox"
-                              checked={item.status === 'completed'}
+                              checked={item.completed}
                               onChange={() => toggleStatus(item)}
                               id={`item-${item.id}`}
                             />
@@ -231,7 +211,7 @@ const Shopping = () => {
                               className="form-check-label ms-2"
                               htmlFor={`item-${item.id}`}
                               style={{
-                                textDecoration: item.status === 'completed' ? 'line-through' : 'none'
+                                textDecoration: item.completed ? 'line-through' : 'none'
                               }}
                             >
                               {item.item_name}
@@ -257,7 +237,7 @@ const Shopping = () => {
                             </div>
                             <button
                               className="btn btn-sm btn-outline-danger"
-                              onClick={() => deleteItem(item.id)}
+                              onClick={() => deleteItemHandler(item.id)}
                             >
                               <i className="fas fa-trash"></i>
                             </button>
@@ -276,4 +256,4 @@ const Shopping = () => {
   );
 };
 
-export default Shopping; 
+export default Shopping;

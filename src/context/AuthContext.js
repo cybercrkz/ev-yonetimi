@@ -1,7 +1,7 @@
 import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
-import { supabase } from '../supabaseClient';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
+import { getSession, loginUser, logoutUser, saveUser } from '../utils/localStorage';
 
 const AuthContext = createContext({});
 
@@ -18,28 +18,11 @@ export const AuthProvider = ({ children }) => {
   const clearAuthData = useCallback(() => {
     setUser(null);
     setSession(null);
-    sessionStorage.clear();
+    logoutUser();
   }, []);
 
   const signOut = useCallback(async () => {
     try {
-      // Önce session'ı kontrol et
-      const { data: { session: currentSession } } = await supabase.auth.getSession();
-      
-      if (!currentSession) {
-        clearAuthData();
-        navigate('/login');
-        return;
-      }
-
-      // Session varsa çıkış yap
-      const { error } = await supabase.auth.signOut();
-      if (error) {
-        console.error('Çıkış yapılırken hata:', error.message);
-        toast.error('Çıkış yapılırken bir hata oluştu');
-        return;
-      }
-
       clearAuthData();
       navigate('/login');
       toast.success('Başarıyla çıkış yapıldı');
@@ -53,41 +36,32 @@ export const AuthProvider = ({ children }) => {
 
   const signUp = async (email, password) => {
     try {
-      const { data, error } = await supabase.auth.signUp({
-        email,
-        password,
-      });
-      if (error) throw error;
-      toast.success('Kayıt başarılı! E-posta adresinizi kontrol edin.');
-      return data;
+      const newUser = saveUser(email, password);
+      toast.success('Kayıt başarılı! Şimdi giriş yapabilirsiniz.');
+      return { user: newUser };
     } catch (error) {
-      toast.error('Kayıt olurken bir hata oluştu');
+      toast.error(error.message || 'Kayıt olurken bir hata oluştu');
       throw error;
     }
   };
 
   const signIn = async (email, password) => {
     try {
-      const { data, error } = await supabase.auth.signInWithPassword({
-        email,
-        password,
-      });
-      if (error) throw error;
+      const data = loginUser(email, password);
       setSession(data.session);
       setUser(data.user);
       toast.success('Başarıyla giriş yapıldı');
       return data;
     } catch (error) {
-      toast.error('Giriş yapılırken bir hata oluştu');
+      toast.error(error.message || 'Giriş yapılırken bir hata oluştu');
       throw error;
     }
   };
 
   const forgotPassword = async (email) => {
     try {
-      const { error } = await supabase.auth.resetPasswordForEmail(email);
-      if (error) throw error;
-      toast.success('Şifre sıfırlama bağlantısı e-posta adresinize gönderildi');
+      // localStorage tabanlı sistemde şifre sıfırlama desteği yok
+      toast.info('Şifre sıfırlama özelliği henüz mevcut değil. Lütfen yeni bir hesap oluşturun.');
     } catch (error) {
       toast.error('Şifre sıfırlama işlemi başarısız oldu');
       throw error;
@@ -140,34 +114,14 @@ export const AuthProvider = ({ children }) => {
 
     const initializeAuth = async () => {
       try {
-        // Mevcut session'ı al
-        const { data: { session: currentSession }, error } = await supabase.auth.getSession();
-        
-        if (error) throw error;
+        // localStorage'dan mevcut session'ı al
+        const currentSession = getSession();
 
         // Component hala mount edilmiş ise state'i güncelle
         if (mounted && currentSession) {
           setSession(currentSession);
-          setUser(currentSession.user);
+          setUser({ id: currentSession.userId, email: currentSession.email });
         }
-
-        // Auth state değişikliklerini dinle
-        const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, newSession) => {
-          if (mounted) {
-            setSession(newSession);
-            setUser(newSession?.user ?? null);
-
-            if (event === 'SIGNED_OUT' || event === 'USER_DELETED') {
-              clearAuthData();
-              navigate('/login');
-            }
-          }
-        });
-
-        return () => {
-          mounted = false;
-          subscription?.unsubscribe();
-        };
       } catch (error) {
         console.error('Auth başlatma hatası:', error.message);
         if (mounted) {
@@ -185,7 +139,7 @@ export const AuthProvider = ({ children }) => {
     return () => {
       mounted = false;
     };
-  }, [navigate, clearAuthData]);
+  }, [clearAuthData]);
 
   const value = {
     user,

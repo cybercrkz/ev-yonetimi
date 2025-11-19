@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useAuth } from '../context/AuthContext';
-import { supabase } from '../supabaseClient';
+import { getExpenses, saveExpense, deleteExpense as deleteExpenseLS } from '../utils/localStorage';
+import { toast } from 'react-toastify';
 
 const Expenses = () => {
   const { user } = useAuth();
@@ -33,19 +34,16 @@ const Expenses = () => {
     { id: 'havale_eft', label: 'Havale/EFT' }
   ];
 
-  const fetchExpenses = useCallback(async () => {
+  const fetchExpenses = useCallback(() => {
     try {
       setLoading(true);
-      const { data, error } = await supabase
-        .from('expenses')
-        .select('*')
-        .eq('user_id', user.id)
-        .order('date', { ascending: false });
-
-      if (error) throw error;
-      setExpenses(data || []);
+      if (user) {
+        const data = getExpenses(user.id);
+        setExpenses(data || []);
+      }
     } catch (error) {
       console.error('Giderler getirilirken hata:', error.message);
+      toast.error('Giderler yüklenirken hata oluştu');
     } finally {
       setLoading(false);
     }
@@ -61,23 +59,16 @@ const Expenses = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const { data, error } = await supabase
-        .from('expenses')
-        .insert([
-          {
-            user_id: user.id,
-            category: newExpense.category,
-            description: newExpense.description,
-            amount: parseFloat(newExpense.amount),
-            date: newExpense.date,
-            payment_method: newExpense.payment_method
-          }
-        ])
-        .select();
+      const newExpenseData = {
+        category: newExpense.category,
+        description: newExpense.description,
+        amount: parseFloat(newExpense.amount),
+        date: newExpense.date,
+        payment_method: newExpense.payment_method
+      };
 
-      if (error) throw error;
-
-      setExpenses([data[0], ...expenses]);
+      const savedExpense = saveExpense(user.id, newExpenseData);
+      setExpenses([savedExpense, ...expenses]);
       setNewExpense({
         category: '',
         description: '',
@@ -85,24 +76,22 @@ const Expenses = () => {
         date: new Date().toISOString().split('T')[0],
         payment_method: 'nakit'
       });
+      toast.success('Gider eklendi');
     } catch (error) {
       console.error('Gider eklenirken hata:', error.message);
+      toast.error('Gider eklenirken hata oluştu');
     }
   };
 
   // Gider sil
-  const deleteExpense = async (id) => {
+  const deleteExpenseHandler = async (id) => {
     try {
-      const { error } = await supabase
-        .from('expenses')
-        .delete()
-        .eq('id', id);
-
-      if (error) throw error;
-
+      deleteExpenseLS(user.id, id);
       setExpenses(expenses.filter(e => e.id !== id));
+      toast.success('Gider silindi');
     } catch (error) {
       console.error('Gider silinirken hata:', error.message);
+      toast.error('Gider silinirken hata oluştu');
     }
   };
 
@@ -290,7 +279,7 @@ const Expenses = () => {
                           <td>
                             <button
                               className="btn btn-sm btn-outline-danger"
-                              onClick={() => deleteExpense(expense.id)}
+                              onClick={() => deleteExpenseHandler(expense.id)}
                               title="Sil"
                             >
                               <i className="fas fa-trash"></i>
@@ -310,4 +299,4 @@ const Expenses = () => {
   );
 };
 
-export default Expenses; 
+export default Expenses;

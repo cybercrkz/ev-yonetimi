@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useAuth } from '../context/AuthContext';
-import { supabase } from '../supabaseClient';
+import { getBills, getExpenses, getTodos, getShoppingItems } from '../utils/localStorage';
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js';
 import { Doughnut } from 'react-chartjs-2';
 
@@ -18,36 +18,30 @@ const Home = () => {
   const [upcomingBills, setUpcomingBills] = useState([]);
 
   // Tüm istatistikleri getir
-  const fetchStats = useCallback(async () => {
+  const fetchStats = useCallback(() => {
     try {
       setLoading(true);
+      
+      if (!user) return;
+
       // Yaklaşan faturaları getir
       const today = new Date();
       const thirtyDaysLater = new Date();
       thirtyDaysLater.setDate(today.getDate() + 30);
 
-      const { data: upcoming, error: upcomingError } = await supabase
-        .from('bills')
-        .select('*')
-        .eq('user_id', user.id)
-        .eq('status', 'pending')
-        .gte('due_date', today.toISOString())
-        .lte('due_date', thirtyDaysLater.toISOString())
-        .order('due_date', { ascending: true })
-        .limit(5);
+      const allBills = getBills(user.id);
+      const upcoming = allBills
+        .filter(bill => {
+          const dueDate = new Date(bill.due_date);
+          return bill.status === 'pending' && dueDate >= today && dueDate <= thirtyDaysLater;
+        })
+        .sort((a, b) => new Date(a.due_date) - new Date(b.due_date))
+        .slice(0, 5);
 
-      if (upcomingError) throw upcomingError;
-      setUpcomingBills(upcoming || []);
+      setUpcomingBills(upcoming);
 
       // Faturalar istatistikleri
-      const { data: bills, error: billsError } = await supabase
-        .from('bills')
-        .select('amount, status')
-        .eq('user_id', user.id);
-
-      if (billsError) throw billsError;
-
-      const billsStats = bills.reduce((acc, bill) => {
+      const billsStats = allBills.reduce((acc, bill) => {
         acc.total += bill.amount;
         if (bill.status === 'completed') {
           acc.paid += bill.amount;
@@ -58,30 +52,18 @@ const Home = () => {
       }, { total: 0, paid: 0, pending: 0 });
 
       // Giderler istatistikleri
-      const { data: expenses, error: expensesError } = await supabase
-        .from('expenses')
-        .select('amount, category')
-        .eq('user_id', user.id);
-
-      if (expensesError) throw expensesError;
-
-      const expensesStats = expenses.reduce((acc, expense) => {
+      const allExpenses = getExpenses(user.id);
+      const expensesStats = allExpenses.reduce((acc, expense) => {
         acc.total += expense.amount;
         acc.categories[expense.category] = (acc.categories[expense.category] || 0) + expense.amount;
         return acc;
       }, { total: 0, categories: {} });
 
       // Yapılacaklar istatistikleri
-      const { data: todos, error: todosError } = await supabase
-        .from('todos')
-        .select('status')
-        .eq('user_id', user.id);
-
-      if (todosError) throw todosError;
-
-      const todosStats = todos.reduce((acc, todo) => {
+      const allTodos = getTodos(user.id);
+      const todosStats = allTodos.reduce((acc, todo) => {
         acc.total++;
-        if (todo.status === 'completed') {
+        if (todo.completed) {
           acc.completed++;
         } else {
           acc.pending++;
@@ -90,16 +72,10 @@ const Home = () => {
       }, { total: 0, completed: 0, pending: 0 });
 
       // Market listesi istatistikleri
-      const { data: items, error: itemsError } = await supabase
-        .from('shopping_items')
-        .select('status')
-        .eq('user_id', user.id);
-
-      if (itemsError) throw itemsError;
-
-      const shoppingStats = items.reduce((acc, item) => {
+      const allItems = getShoppingItems(user.id);
+      const shoppingStats = allItems.reduce((acc, item) => {
         acc.total++;
-        if (item.status === 'completed') {
+        if (item.completed) {
           acc.completed++;
         } else {
           acc.pending++;
@@ -203,7 +179,7 @@ const Home = () => {
                 <span className="text-muted ms-2">Toplam</span>
               </div>
               <div className="small">
-                {Object.entries(stats.expenses.categories).map(([category, amount]) => (
+                {Object.entries(stats.expenses.categories).slice(0, 3).map(([category, amount]) => (
                   <div key={category} className="d-flex justify-content-between mb-1">
                     <span>{category}</span>
                     <span>{amount.toLocaleString('tr-TR', { style: 'currency', currency: 'TRY' })}</span>
@@ -271,47 +247,49 @@ const Home = () => {
         </div>
 
         {/* Gider Dağılımı Grafiği */}
-        <div className="col-md-6">
-          <div className="card shadow">
-            <div className="card-body">
-              <h6 className="card-title mb-3">Gider Dağılımı</h6>
-              <div style={{ height: '300px' }}>
-                <Doughnut
-                  data={{
-                    labels: Object.keys(stats.expenses.categories),
-                    datasets: [
-                      {
-                        data: Object.values(stats.expenses.categories),
-                        backgroundColor: [
-                          '#4e73df',
-                          '#1cc88a',
-                          '#36b9cc',
-                          '#f6c23e',
-                          '#e74a3b',
-                          '#858796',
-                        ],
+        {Object.keys(stats.expenses.categories).length > 0 && (
+          <div className="col-md-6">
+            <div className="card shadow">
+              <div className="card-body">
+                <h6 className="card-title mb-3">Gider Dağılımı</h6>
+                <div style={{ height: '300px' }}>
+                  <Doughnut
+                    data={{
+                      labels: Object.keys(stats.expenses.categories),
+                      datasets: [
+                        {
+                          data: Object.values(stats.expenses.categories),
+                          backgroundColor: [
+                            '#4e73df',
+                            '#1cc88a',
+                            '#36b9cc',
+                            '#f6c23e',
+                            '#e74a3b',
+                            '#858796',
+                          ],
+                        },
+                      ],
+                    }}
+                    options={{
+                      maintainAspectRatio: false,
+                      plugins: {
+                        legend: {
+                          position: 'bottom',
+                        },
                       },
-                    ],
-                  }}
-                  options={{
-                    maintainAspectRatio: false,
-                    plugins: {
-                      legend: {
-                        position: 'bottom',
-                      },
-                    },
-                  }}
-                />
+                    }}
+                  />
+                </div>
               </div>
             </div>
           </div>
-        </div>
+        )}
 
         {/* Yaklaşan Faturalar */}
         <div className="col-md-6">
           <div className="card shadow">
             <div className="card-body">
-              <h6 className="card-title mb-3">Yaklaşan Faturalar</h6>
+              <h6 className="card-title mb-3">Yaklaşan Faturalar (30 Gün)</h6>
               <div className="table-responsive">
                 <table className="table table-hover">
                   <thead>
@@ -324,7 +302,7 @@ const Home = () => {
                   <tbody>
                     {upcomingBills.map((bill) => (
                       <tr key={bill.id}>
-                        <td>{bill.description}</td>
+                        <td>{bill.bill_type}</td>
                         <td>{bill.amount.toLocaleString('tr-TR', { style: 'currency', currency: 'TRY' })}</td>
                         <td>{new Date(bill.due_date).toLocaleDateString('tr-TR')}</td>
                       </tr>
@@ -347,4 +325,4 @@ const Home = () => {
   );
 };
 
-export default Home; 
+export default Home;

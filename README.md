@@ -1,179 +1,194 @@
 # Ev Yönetimi Uygulaması
 
-Bu proje, ev yönetimi işlemlerini kolaylaştırmak için geliştirilmiş bir React uygulamasıdır. [Create React App](https://github.com/facebook/create-react-app) kullanılarak oluşturulmuştur.
+Modern ve kullanıcı dostu bir ev yönetimi uygulaması. Tüm veriler tarayıcınızda localStorage ile güvenli şekilde saklanır.
 
-## Özellikler
+## ✨ Özellikler
 
-- 📊 Dashboard ile genel bakış
-- 💰 Fatura takibi
-- 📝 Gider yönetimi
-- ✅ Yapılacaklar listesi
-- 🛒 Market alışveriş listesi
-- 📈 Gider analizi ve raporlama
-- 👥 Kullanıcı yönetimi
-- 🔐 Güvenli oturum yönetimi
+* 📊 **Dashboard** - Genel bakış ve istatistikler
+* 💰 **Fatura Takibi** - Faturalarınızı takip edin, ödeme durumlarını yönetin
+* 📝 **Gider Yönetimi** - Günlük giderlerinizi kategorilere ayırarak kaydedin
+* ✅ **Yapılacaklar Listesi** - Görevlerinizi organize edin
+* 🛒 **Market Alışveriş Listesi** - Alışveriş listenizi kolayca yönetin
+* 📈 **Gider Analizi ve Raporlama** - Grafik ve tablolarla harcamalarınızı görselleştirin
+* 👥 **Kullanıcı Yönetimi** - Kişisel hesap sistemi
+* 🔐 **Güvenli Oturum Yönetimi** - 1 dakika hareketsizlik sonrası otomatik çıkış
+* 💾 **LocalStorage Depolama** - Tüm veriler tarayıcınızda güvenle saklanır
 
-## Kullanılan Teknolojiler
+## 🚀 Kullanılan Teknolojiler
 
-- React.js
-- Supabase (Veritabanı ve Kimlik Doğrulama)
-- Bootstrap 5
-- Chart.js (Grafikler için)
-- React Router
-- React Toastify
+* **React.js** - Modern UI framework
+* **Bootstrap 5** - Responsive tasarım
+* **Chart.js** - Grafik görselleştirme
+* **React Router** - Sayfa yönlendirme
+* **React Toastify** - Bildirim sistemi
+* **LocalStorage API** - Tarayıcı tabanlı veri saklama
 
-## Kurulum
+## 📦 Kurulum
 
 Projeyi yerel ortamınızda çalıştırmak için:
 
-1. Repoyu klonlayın:
+1. **Repoyu klonlayın:**
 ```bash
-git clone [repo-url]
+git clone https://github.com/cybercrkz/ev-yonetimi.git
+cd ev-yonetimi
 ```
 
-2. Bağımlılıkları yükleyin:
+2. **Bağımlılıkları yükleyin:**
 ```bash
 npm install
 ```
 
-3. `.env` dosyasını oluşturun ve Supabase bilgilerinizi ekleyin:
-```env
-REACT_APP_SUPABASE_URL=your_supabase_url
-REACT_APP_SUPABASE_ANON_KEY=your_supabase_anon_key
-```
-
-4. Uygulamayı başlatın:
+3. **Uygulamayı başlatın:**
 ```bash
 npm start
 ```
 
-## Kullanılabilir Komutlar
+Uygulama otomatik olarak tarayıcınızda `http://localhost:3000` adresinde açılacaktır.
 
-### `npm start`
+## 🎯 Kullanım
 
-Uygulamayı geliştirme modunda çalıştırır.\
-[http://localhost:3000](http://localhost:3000) adresinden tarayıcınızda görüntüleyebilirsiniz.
+### İlk Başlangıç
 
-Yaptığınız değişiklikler otomatik olarak sayfayı yenileyecektir.\
-Konsoldaki hata mesajlarını da görebilirsiniz.
+1. Uygulamayı başlattıktan sonra "Kayıt Ol" butonuna tıklayın
+2. E-posta adresinizi ve şifrenizi girerek hesap oluşturun
+3. Giriş yaparak uygulamayı kullanmaya başlayın
 
-### `npm test`
+### Özellikler
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+#### 📊 Ana Sayfa (Dashboard)
+- Faturalar, giderler, yapılacaklar ve market listesi özetini görün
+- Gider dağılımı grafiğini inceleyin
+- Yaklaşan faturaları kontrol edin
 
-### `npm run build`
+#### 💰 Faturalar
+- Yeni fatura ekleyin (elektrik, su, internet vb.)
+- Fatura durumunu "Ödendi/Bekliyor" olarak işaretleyin
+- Son ödeme tarihlerine göre renkli uyarılar alın
+- Ödenen ve bekleyen fatura toplamlarını görün
 
-Uygulamayı production modunda derler ve `build` klasörüne çıktı üretir.\
-React'i production modunda doğru şekilde paketler ve en iyi performans için yapıyı optimize eder.
+#### 📝 Giderler
+- Kategoriye göre gider kaydedin
+- Ödeme yöntemini belirleyin (nakit, kredi kartı vb.)
+- Kategori ve ödeme yöntemine göre toplam raporları görün
+- Tarih bazlı gider takibi yapın
 
-Derleme işlemi sıkıştırılır ve dosya adları hash'leri içerir.\
-Uygulamanız deployment için hazır!
+#### ✅ Yapılacaklar
+- Görevlerinizi ekleyin ve yönetin
+- Son tarih belirleyin
+- Tamamlanan görevleri işaretleyin
+- Açıklama ve notlar ekleyin
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+#### 🛒 Market Listesi
+- Alışveriş ürünlerini kategorilere göre gruplandırın
+- Miktar belirleyin ve güncelleyin
+- Alınan ürünleri işaretleyin
+- Liste otomatik olarak kategorilere ayrılır
 
-### `npm run eject`
-**Not: Bu tek yönlü bir işlemdir. `eject` komutunu kullandıktan sonra geri dönemezsiniz!**
+## 🔒 Güvenlik
 
-Eğer derleme aracı ve yapılandırma seçeneklerinden memnun değilseniz, istediğiniz zaman `eject` komutunu kullanabilirsiniz. Bu komut, projenizden tek derleme bağımlılığını kaldıracaktır.
+* Tüm veriler **localStorage** ile tarayıcınızda saklanır
+* Şifreler kullanıcı tarafında tutulur
+* 1 dakika hareketsizlik sonrası otomatik çıkış
+* Her kullanıcının verileri izole edilmiştir
 
-Bunun yerine, tüm yapılandırma dosyalarını ve geçişli bağımlılıkları (webpack, Babel, ESLint vb.) doğrudan projenize kopyalayarak tam kontrol sahibi olmanızı sağlar. `eject` dışındaki tüm komutlar çalışmaya devam edecektir, ancak artık kopyalanan scriptleri işaret edeceklerdir ve bunları düzenleyebilirsiniz. Bu noktadan sonra kendi başınızasınız.
+## 📱 Responsive Tasarım
 
-`eject` komutunu kullanmak zorunda değilsiniz. Mevcut özellik seti küçük ve orta ölçekli dağıtımlar için uygundur ve bu özelliği kullanmak zorunda hissetmemelisiniz. Ancak hazır olduğunuzda özelleştirme yapamamanız durumunda bu aracın faydalı olmayacağını anlıyoruz.
+Uygulama tüm cihazlarda (masaüstü, tablet, mobil) sorunsuz çalışır.
 
-## Güvenlik
+## 🛠️ Geliştirme
 
-- Oturum yönetimi Supabase ile sağlanmaktadır
-- 1 dakika hareketsizlik sonrası otomatik çıkış yapılır
-- Tüm API istekleri güvenli HTTPS üzerinden gerçekleştirilir
-- Hassas veriler şifrelenerek saklanır
+### Kullanılabilir Komutlar
 
-## Veritabanı Şeması
+#### `npm start`
+Uygulamayı geliştirme modunda çalıştırır.  
+[http://localhost:3000](http://localhost:3000) adresinden erişilebilir.
 
-### Tablolar
+#### `npm test`
+Test runner'ı interaktif mod olarak başlatır.
 
-1. users
-   - id (UUID)
-   - email (String)
-   - created_at (Timestamp)
+#### `npm run build`
+Uygulamayı production modu için derler ve `build` klasörüne çıktı üretir.  
+React'i production modunda optimize eder.
 
-2. bills
-   - id (UUID)
-   - user_id (UUID, FK)
-   - title (String)
-   - amount (Decimal)
-   - due_date (Date)
-   - status (String)
-   - created_at (Timestamp)
+## 🌐 Deploy
 
-3. expenses
-   - id (UUID)
-   - user_id (UUID, FK)
-   - category (String)
-   - amount (Decimal)
-   - date (Date)
-   - description (String)
-   - created_at (Timestamp)
+### Vercel'e Deploy
 
-4. todos
-   - id (UUID)
-   - user_id (UUID, FK)
-   - title (String)
-   - completed (Boolean)
-   - created_at (Timestamp)
+1. [Vercel](https://vercel.com) hesabınıza giriş yapın
+2. GitHub reposunu bağlayın
+3. Deploy butonuna tıklayın
+4. Otomatik olarak build alınıp yayınlanır
 
-5. shopping_items
-   - id (UUID)
-   - user_id (UUID, FK)
-   - item (String)
-   - quantity (Integer)
-   - completed (Boolean)
-   - created_at (Timestamp)
+### Netlify'a Deploy
 
-## Katkıda Bulunma
+1. [Netlify](https://netlify.com) hesabınıza giriş yapın
+2. "New site from Git" seçeneğini kullanın
+3. GitHub reposunu seçin
+4. Build command: `npm run build`
+5. Publish directory: `build`
+
+## 📊 Veritabanı Yapısı
+
+Tüm veriler localStorage'da JSON formatında saklanır:
+
+### Kullanıcılar
+```javascript
+{
+  id: "timestamp",
+  email: "user@example.com",
+  password: "hashed_password",
+  createdAt: "2025-01-01T00:00:00.000Z"
+}
+```
+
+### Faturalar
+```javascript
+{
+  id: "timestamp",
+  bill_type: "Elektrik",
+  amount: 150.50,
+  due_date: "2025-01-15",
+  status: "pending",
+  notes: "Not",
+  createdAt: "2025-01-01T00:00:00.000Z"
+}
+```
+
+### Giderler
+```javascript
+{
+  id: "timestamp",
+  category: "Market",
+  description: "Haftalık alışveriş",
+  amount: 250.00,
+  date: "2025-01-01",
+  payment_method: "nakit",
+  createdAt: "2025-01-01T00:00:00.000Z"
+}
+```
+
+## 🤝 Katkıda Bulunma
 
 1. Bu repoyu fork edin
-2. Feature branch'inizi oluşturun (`git checkout -b feature/AmazingFeature`)
-3. Değişikliklerinizi commit edin (`git commit -m 'Add some AmazingFeature'`)
-4. Branch'inizi push edin (`git push origin feature/AmazingFeature`)
+2. Feature branch'inizi oluşturun (`git checkout -b feature/YeniOzellik`)
+3. Değişikliklerinizi commit edin (`git commit -m 'Yeni özellik eklendi'`)
+4. Branch'inizi push edin (`git push origin feature/YeniOzellik`)
 5. Pull Request oluşturun
 
-## Lisans
+## 📝 Lisans
 
-Bu proje MIT lisansı altında lisanslanmıştır. Detaylar için [LICENSE](LICENSE) dosyasına bakın.
+Bu proje MIT lisansı altında lisanslanmıştır.
 
-## İletişim
+## 📧 İletişim
 
 Proje Sahibi - [@cybercrkz](https://github.com/cybercrkz)
 
 Proje Linki: [https://github.com/cybercrkz/ev-yonetimi](https://github.com/cybercrkz/ev-yonetimi)
 
-## Learn More
+## 🙏 Teşekkürler
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+Bu proje Create React App kullanılarak oluşturulmuştur.
 
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+* [Create React App Dokümantasyonu](https://facebook.github.io/create-react-app/docs/getting-started)
+* [React Dokümantasyonu](https://reactjs.org/)
+* [Bootstrap Dokümantasyonu](https://getbootstrap.com/)

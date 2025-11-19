@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useAuth } from '../context/AuthContext';
-import { supabase } from '../supabaseClient';
+import { getBills, saveBill, updateBill, deleteBill as deleteBillLS } from '../utils/localStorage';
+import { toast } from 'react-toastify';
 
 const Bills = () => {
   const { user } = useAuth();
@@ -24,19 +25,16 @@ const Bills = () => {
     'Diğer'
   ];
 
-  const fetchBills = useCallback(async () => {
+  const fetchBills = useCallback(() => {
     try {
       setLoading(true);
-      const { data, error } = await supabase
-        .from('bills')
-        .select('*')
-        .eq('user_id', user.id)
-        .order('due_date', { ascending: true });
-
-      if (error) throw error;
-      setBills(data || []);
+      if (user) {
+        const data = getBills(user.id);
+        setBills(data || []);
+      }
     } catch (error) {
       console.error('Faturalar getirilirken hata:', error.message);
+      toast.error('Faturalar yüklenirken hata oluştu');
     } finally {
       setLoading(false);
     }
@@ -52,31 +50,26 @@ const Bills = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const { data, error } = await supabase
-        .from('bills')
-        .insert([
-          {
-            user_id: user.id,
-            bill_type: newBill.bill_type,
-            amount: parseFloat(newBill.amount),
-            due_date: newBill.due_date,
-            notes: newBill.notes,
-            status: 'pending'
-          }
-        ])
-        .select();
-
-      if (error) throw error;
-
-      setBills([...bills, data[0]]);
+      const newBillData = {
+        bill_type: newBill.bill_type,
+        amount: parseFloat(newBill.amount),
+        due_date: newBill.due_date,
+        notes: newBill.notes,
+        status: 'pending'
+      };
+      
+      const savedBill = saveBill(user.id, newBillData);
+      setBills([...bills, savedBill]);
       setNewBill({
         bill_type: '',
         amount: '',
         due_date: '',
         notes: ''
       });
+      toast.success('Fatura eklendi');
     } catch (error) {
       console.error('Fatura eklenirken hata:', error.message);
+      toast.error('Fatura eklenirken hata oluştu');
     }
   };
 
@@ -86,37 +79,30 @@ const Bills = () => {
       const newStatus = bill.status === 'completed' ? 'pending' : 'completed';
       const payment_date = newStatus === 'completed' ? new Date().toISOString() : null;
       
-      const { error } = await supabase
-        .from('bills')
-        .update({ 
-          status: newStatus,
-          payment_date: payment_date
-        })
-        .eq('id', bill.id);
-
-      if (error) throw error;
+      updateBill(user.id, bill.id, { 
+        status: newStatus,
+        payment_date: payment_date
+      });
 
       setBills(bills.map(b => 
         b.id === bill.id ? { ...b, status: newStatus, payment_date } : b
       ));
+      toast.success('Durum güncellendi');
     } catch (error) {
       console.error('Durum güncellenirken hata:', error.message);
+      toast.error('Durum güncellenirken hata oluştu');
     }
   };
 
   // Fatura sil
-  const deleteBill = async (id) => {
+  const deleteBillHandler = async (id) => {
     try {
-      const { error } = await supabase
-        .from('bills')
-        .delete()
-        .eq('id', id);
-
-      if (error) throw error;
-
+      deleteBillLS(user.id, id);
       setBills(bills.filter(b => b.id !== id));
+      toast.success('Fatura silindi');
     } catch (error) {
       console.error('Fatura silinirken hata:', error.message);
+      toast.error('Fatura silinirken hata oluştu');
     }
   };
 
@@ -298,7 +284,7 @@ const Bills = () => {
                               </button>
                               <button
                                 className="btn btn-sm btn-outline-danger"
-                                onClick={() => deleteBill(bill.id)}
+                                onClick={() => deleteBillHandler(bill.id)}
                                 title="Sil"
                               >
                                 <i className="fas fa-trash"></i>
@@ -319,4 +305,4 @@ const Bills = () => {
   );
 };
 
-export default Bills; 
+export default Bills;
