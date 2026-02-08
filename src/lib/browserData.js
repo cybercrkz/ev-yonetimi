@@ -52,12 +52,18 @@ const getShoppingItemsForUser = async (userId) => {
   return { data: items, error: null };
 };
 
+const getIncomesForUser = async (userId) => {
+  const incomes = loadTable('incomes').filter(i => i.user_id === userId);
+  return { data: incomes, error: null };
+};
+
 export const browserData = {
   getUpcomingBills,
   getBillsForUser,
   getExpensesForUser,
   getTodosForUser,
   getShoppingItemsForUser,
+  getIncomesForUser,
 };
 
 export default browserData;

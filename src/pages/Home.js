@@ -91,7 +91,22 @@ const Home = () => {
         bills: billsStats,
         expenses: expensesStats,
         todos: todosStats,
-        shoppingItems: shoppingStats
+        shoppingItems: shoppingStats,
+        incomes: { total: 0 } // default if fetch fails
+      });
+
+      // Gelirler istatistikleri
+      const { data: incomes, error: incomesError } = await browserData.getIncomesForUser(user.id);
+      if (incomesError) throw incomesError;
+
+      const incomesTotal = (incomes || []).reduce((acc, inc) => acc + inc.amount, 0);
+
+      setStats({
+        bills: billsStats,
+        expenses: expensesStats,
+        todos: todosStats,
+        shoppingItems: shoppingStats,
+        incomes: { total: incomesTotal }
       });
     } catch (error) {
       console.error('İstatistikler getirilirken hata:', error.message);
@@ -136,7 +151,34 @@ const Home = () => {
       <div className="row g-4">
         {/* Faturalar Özeti */}
         <div className="col-md-6 col-lg-3">
-          <div className="card shadow h-100">
+          <div className="card shadow h-100 border-0 rounded-4 glass-pro-max">
+            <div className="card-body">
+              <div className="d-flex justify-content-between align-items-center mb-3">
+                <h6 className="card-title mb-0">Toplam Kasa / Gelir</h6>
+                <div className="p-2 rounded-3 bg-success-subtle">
+                  <i className="fas fa-hand-holding-usd fs-4 text-success"></i>
+                </div>
+              </div>
+              <div className="mb-2">
+                <span className="fs-4 fw-bold text-success">
+                  {(stats.incomes?.total || 0).toLocaleString('tr-TR', { style: 'currency', currency: 'TRY' })}
+                </span>
+                <span className="text-muted ms-2 d-block small">Toplam Para Girişi</span>
+              </div>
+              <hr className="my-3 opacity-25" />
+              <div className="d-flex justify-content-between align-items-center">
+                <small className="text-muted">Net Durum</small>
+                <span className={`fw-bold ${(stats.incomes?.total - stats.expenses?.total - stats.bills?.total) >= 0 ? 'text-success' : 'text-danger'}`}>
+                  {(stats.incomes?.total - stats.expenses?.total - stats.bills?.total).toLocaleString('tr-TR', { style: 'currency', currency: 'TRY' })}
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Faturalar Özeti */}
+        <div className="col-md-6 col-lg-3">
+          <div className="card shadow h-100 border-0 rounded-4">
             <div className="card-body">
               <div className="d-flex justify-content-between align-items-center mb-3">
                 <h6 className="card-title mb-0">Faturalar</h6>

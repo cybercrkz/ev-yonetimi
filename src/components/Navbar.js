@@ -18,8 +18,8 @@ const Navbar = () => {
   // E-posta adresinden kullanıcı adını çıkar
   const getUserFirstName = () => {
     if (!user?.email) return '';
-    return user.email.split('@')[0].charAt(0).toUpperCase() + 
-           user.email.split('@')[0].slice(1);
+    return user.email.split('@')[0].charAt(0).toUpperCase() +
+      user.email.split('@')[0].slice(1);
   };
 
   return (
@@ -65,6 +65,11 @@ const Navbar = () => {
               <li className="nav-item">
                 <Link className="nav-link" to="/expenses">
                   <i className="fas fa-wallet me-1"></i>Giderler
+                </Link>
+              </li>
+              <li className="nav-item">
+                <Link className="nav-link" to="/incomes">
+                  <i className="fas fa-hand-holding-usd me-1"></i>Gelirler/Kasa
                 </Link>
               </li>
             </ul>
