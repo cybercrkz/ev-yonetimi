@@ -18,7 +18,7 @@ const Login = () => {
       await signIn(email, password);
       navigate('/');
     } catch (error) {
-      setError('E-posta veya şifre hatalı');
+      setError(error.message || 'E-posta veya şifre hatalı');
     } finally {
       setLoading(false);
     }
