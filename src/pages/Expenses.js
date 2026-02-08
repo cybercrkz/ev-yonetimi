@@ -99,13 +99,7 @@ const Expenses = () => {
     }, {});
   };
 
-  // Ödeme yöntemine göre toplam hesapla
-  const calculateTotalsByPaymentMethod = () => {
-    return expenses.reduce((acc, expense) => {
-      acc[expense.payment_method] = (acc[expense.payment_method] || 0) + expense.amount;
-      return acc;
-    }, {});
-  };
+
 
   if (loading) {
     return (
