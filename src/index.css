@@ -1,0 +1,60 @@
+:root {
+  /* Pro Max Design Tokens */
+  --primary-color: #0B1120;
+  --accent-color: #C59D5F;
+  --surface-color: rgba(255, 255, 255, 0.7);
+  --glass-bg: rgba(255, 255, 255, 0.1);
+  --glass-border: rgba(255, 255, 255, 0.2);
+  --glass-blur: 15px;
+  --premium-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  --transition-smooth: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+body {
+  margin: 0;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background-color: #f8fafc;
+  color: var(--primary-color);
+}
+
+/* Glassmorphism Pro Max Utility */
+.glass-pro-max {
+  background: var(--surface-color);
+  backdrop-filter: blur(var(--glass-blur));
+  -webkit-backdrop-filter: blur(var(--glass-blur));
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--premium-shadow);
+}
+
+/* Premium Button Styling (Base) */
+.btn-pro-max {
+  background: var(--primary-color);
+  color: white;
+  border: none;
+  padding: 10px 25px;
+  border-radius: 12px;
+  transition: var(--transition-smooth);
+  font-weight: 500;
+  letter-spacing: 0.5px;
+}
+
+.btn-pro-max:hover {
+  background: var(--accent-color);
+  transform: translateY(-2px);
+  box-shadow: 0 10px 20px rgba(197, 157, 95, 0.3);
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+}
+
+/* NavLink aktif olduğunda stil */
+.nav-link.active {
+  color: var(--accent-color) !important;
+  font-weight: 600;
+}
