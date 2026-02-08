@@ -46,7 +46,7 @@ function App() {
       <AuthProvider>
         <div className="d-flex flex-column min-vh-100">
           <Navbar />
-          <main className="flex-grow-1" style={{ paddingTop: '100px' }}>
+          <main className="flex-grow-1">
             <Routes>
               {/* Ana sayfa yönlendirmesi */}
               <Route

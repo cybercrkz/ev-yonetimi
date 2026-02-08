@@ -127,55 +127,40 @@ const Shopping = () => {
   }
 
   return (
-    <div className="container py-5 animate__animated animate__fadeIn">
-      <div className="d-flex justify-content-between align-items-center mb-5">
-        <div>
-          <h2 className="fw-bold mb-1">Market Listesi</h2>
-          <p className="text-muted mb-0">Evin eksiklerini listeleyin ve alışverişinizi planlayın.</p>
-        </div>
-        <div className="text-end">
-          <div className="glass-pro-max p-3 rounded-4 border-0">
-            <small className="text-muted d-block mb-1">Listede</small>
-            <span className="fs-3 fw-bold text-info">{items.length} Ürün</span>
-          </div>
-        </div>
-      </div>
-
-      <div className="row g-4">
-        <div className="col-lg-4">
-          <div className="card card-pro border-0 shadow-sm glass-pro-max overflow-hidden">
-            <div className="card-header bg-primary text-white py-3 border-0">
-              <h5 className="card-title mb-0">Ürün Ekle</h5>
-            </div>
-            <div className="card-body p-4">
+    <div className="container py-5">
+      <div className="row">
+        <div className="col-md-4 mb-4">
+          <div className="card shadow">
+            <div className="card-body">
+              <h5 className="card-title mb-4">Yeni Ürün Ekle</h5>
               <form onSubmit={handleSubmit}>
                 <div className="mb-3">
-                  <label className="form-label small text-muted">Ürün Adı</label>
+                  <label htmlFor="item_name" className="form-label">Ürün Adı</label>
                   <input
                     type="text"
-                    className="form-control border-0 bg-light py-2"
-                    style={{ borderRadius: '12px' }}
+                    className="form-control"
+                    id="item_name"
                     value={newItem.item_name}
                     onChange={(e) => setNewItem({ ...newItem, item_name: e.target.value })}
                     required
                   />
                 </div>
                 <div className="mb-3">
-                  <label className="form-label small text-muted">Miktar</label>
+                  <label htmlFor="quantity" className="form-label">Miktar</label>
                   <input
                     type="number"
-                    className="form-control border-0 bg-light py-2"
-                    style={{ borderRadius: '12px' }}
+                    className="form-control"
+                    id="quantity"
                     min="1"
                     value={newItem.quantity}
                     onChange={(e) => setNewItem({ ...newItem, quantity: parseInt(e.target.value) })}
                   />
                 </div>
-                <div className="mb-4">
-                  <label className="form-label small text-muted">Kategori</label>
+                <div className="mb-3">
+                  <label htmlFor="category" className="form-label">Kategori</label>
                   <select
-                    className="form-select border-0 bg-light py-2"
-                    style={{ borderRadius: '12px' }}
+                    className="form-select"
+                    id="category"
                     value={newItem.category}
                     onChange={(e) => setNewItem({ ...newItem, category: e.target.value })}
                   >
@@ -185,85 +170,73 @@ const Shopping = () => {
                     ))}
                   </select>
                 </div>
-                <button type="submit" className="btn btn-pro-max w-100 py-3 shadow-sm">
-                  <i className="fas fa-plus-circle me-2"></i>Listeye Ekle
+                <button type="submit" className="btn btn-primary w-100">
+                  <i className="fas fa-plus me-2"></i>Ekle
                 </button>
               </form>
             </div>
           </div>
         </div>
-
-        <div className="col-lg-8">
-          <div className="card card-pro border-0 shadow-sm glass-pro-max overflow-hidden">
-            <div className="card-header bg-white py-3 border-bottom border-light">
-              <h5 className="card-title mb-0">Harcama Listesi</h5>
-            </div>
-            <div className="card-body p-4">
+        
+        <div className="col-md-8">
+          <div className="card shadow">
+            <div className="card-body">
+              <h5 className="card-title mb-4">Market Listesi</h5>
               {items.length === 0 ? (
-                <div className="text-center py-5 text-muted">
-                  <i className="fas fa-shopping-basket fs-1 mb-3 opacity-25"></i>
-                  <p>Henüz listeye ürün eklenmemiş.</p>
-                </div>
+                <p className="text-muted text-center">Henüz listeye ürün eklenmemiş.</p>
               ) : (
                 Object.entries(groupedItems).map(([category, categoryItems]) => (
-                  <div key={category} className="mb-5">
-                    <h6 className="fw-bold mb-3 text-primary d-flex align-items-center">
-                      <span className="p-1 px-2 rounded-2 bg-primary bg-opacity-10 me-2">
-                        <i className="fas fa-tag small"></i>
-                      </span>
-                      {category}
+                  <div key={category} className="mb-4">
+                    <h6 className="border-bottom pb-2 mb-3">
+                      <i className="fas fa-tag me-2"></i>{category}
                     </h6>
-                    <div className="list-group list-group-flush border rounded-4 overflow-hidden shadow-sm">
+                    <div className="list-group">
                       {categoryItems.map(item => (
                         <div
                           key={item.id}
-                          className="list-group-item bg-white px-4 py-3 d-flex justify-content-between align-items-center border-light transition-all"
-                          style={{ opacity: item.status === 'completed' ? 0.6 : 1 }}
+                          className="list-group-item list-group-item-action d-flex justify-content-between align-items-center"
                         >
-                          <div className="d-flex align-items-center flex-grow-1">
-                            <div className="form-check custom-checkbox">
-                              <input
-                                className="form-check-input border-2"
-                                type="checkbox"
-                                checked={item.status === 'completed'}
-                                onChange={() => toggleStatus(item)}
-                                id={`item-${item.id}`}
-                                style={{ width: '22px', height: '22px', cursor: 'pointer' }}
-                              />
-                            </div>
+                          <div className="form-check flex-grow-1">
+                            <input
+                              className="form-check-input"
+                              type="checkbox"
+                              checked={item.status === 'completed'}
+                              onChange={() => toggleStatus(item)}
+                              id={`item-${item.id}`}
+                            />
                             <label
-                              className="form-check-label mb-0 ms-3 fw-bold"
+                              className="form-check-label ms-2"
                               htmlFor={`item-${item.id}`}
                               style={{
-                                textDecoration: item.status === 'completed' ? 'line-through' : 'none',
-                                cursor: 'pointer',
-                                color: item.status === 'completed' ? '#94a3b8' : '#1e293b'
+                                textDecoration: item.status === 'completed' ? 'line-through' : 'none'
                               }}
                             >
                               {item.item_name}
                             </label>
                           </div>
-                          <div className="d-flex align-items-center gap-3">
-                            <div className="d-flex align-items-center bg-light rounded-pill px-2 py-1">
+                          <div className="d-flex align-items-center">
+                            <div className="btn-group me-2">
                               <button
-                                className="btn btn-sm btn-link text-muted p-0 border-0"
+                                className="btn btn-sm btn-outline-secondary"
                                 onClick={() => updateQuantity(item, -1)}
                               >
-                                <i className="fas fa-minus-circle"></i>
+                                -
                               </button>
-                              <span className="mx-3 fw-bold small">{item.quantity}</span>
+                              <button className="btn btn-sm btn-outline-secondary" disabled>
+                                {item.quantity}
+                              </button>
                               <button
-                                className="btn btn-sm btn-link text-muted p-0 border-0"
+                                className="btn btn-sm btn-outline-secondary"
                                 onClick={() => updateQuantity(item, 1)}
                               >
-                                <i className="fas fa-plus-circle"></i>
+                                +
                               </button>
                             </div>
                             <button
-                              className="btn btn-link text-danger p-0 border-0 ms-2"
+                              className="btn btn-sm btn-outline-danger"
                               onClick={() => deleteItem(item.id)}
                             >
-                              <i className="fas fa-trash-alt"></i>
+                              <i className="fas fa-trash"></i>
                             </button>
                           </div>
                         </div>

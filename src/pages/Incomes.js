@@ -91,15 +91,15 @@ const Incomes = () => {
     const grandTotal = incomes.reduce((acc, curr) => acc + curr.amount, 0);
 
     return (
-        <div className="container py-5 animate__animated animate__fadeIn">
+        <div className="container py-5">
             <div className="d-flex justify-content-between align-items-center mb-5">
                 <div>
-                    <h2 className="fw-bold mb-1">Kasa & Gelir Takibi</h2>
-                    <p className="text-muted mb-0">Maaş, ikramiye ve diğer nakit girişlerini modern bir arayüzle yönetin.</p>
+                    <h2 className="fw-bold mb-1">Kasa & Gelir Yönetimi</h2>
+                    <p className="text-muted mb-0">Maas, ikramiye ve diğer para girişlerinizi takip edin.</p>
                 </div>
                 <div className="text-end">
-                    <div className="glass-pro-max p-3 rounded-4 border-0">
-                        <small className="text-muted d-block mb-1">Toplam Birikim</small>
+                    <div className="glass-pro-max p-3 rounded-4 shadow-sm border-0">
+                        <small className="text-muted d-block mb-1">Toplam Kasa Girişi</small>
                         <span className="fs-3 fw-bold text-success">
                             {grandTotal.toLocaleString('tr-TR', { style: 'currency', currency: 'TRY' })}
                         </span>
@@ -109,17 +109,17 @@ const Incomes = () => {
 
             <div className="row g-4">
                 <div className="col-lg-4">
-                    <div className="card card-pro border-0 shadow-sm glass-pro-max overflow-hidden">
+                    <div className="card border-0 shadow-sm rounded-4 overflow-hidden">
                         <div className="card-header bg-primary text-white py-3 border-0">
-                            <h5 className="card-title mb-0">Gelir Kaydı Ekle</h5>
+                            <h5 className="card-title mb-0">Para Girişi Ekle</h5>
                         </div>
                         <div className="card-body p-4">
                             <form onSubmit={handleSubmit}>
                                 <div className="mb-3">
-                                    <label className="form-label small text-muted">Kategori</label>
+                                    <label className="form-label small text-muted">Gelir Türü</label>
                                     <select
                                         className="form-select border-0 bg-light py-2"
-                                        style={{ borderRadius: '12px' }}
+                                        style={{ borderRadius: '10px' }}
                                         value={newIncome.category}
                                         onChange={(e) => setNewIncome({ ...newIncome, category: e.target.value })}
                                         required
@@ -134,8 +134,8 @@ const Incomes = () => {
                                     <input
                                         type="text"
                                         className="form-control border-0 bg-light py-2"
-                                        style={{ borderRadius: '12px' }}
-                                        placeholder="Örn: Aylık Maaş Ödemesi"
+                                        style={{ borderRadius: '10px' }}
+                                        placeholder="Örn: Şubat Ayı Maaşı"
                                         value={newIncome.description}
                                         onChange={(e) => setNewIncome({ ...newIncome, description: e.target.value })}
                                         required
@@ -146,7 +146,7 @@ const Incomes = () => {
                                     <input
                                         type="number"
                                         className="form-control border-0 bg-light py-2"
-                                        style={{ borderRadius: '12px' }}
+                                        style={{ borderRadius: '10px' }}
                                         placeholder="0.00"
                                         min="0"
                                         step="0.01"
@@ -160,14 +160,14 @@ const Incomes = () => {
                                     <input
                                         type="date"
                                         className="form-control border-0 bg-light py-2"
-                                        style={{ borderRadius: '12px' }}
+                                        style={{ borderRadius: '10px' }}
                                         value={newIncome.date}
                                         onChange={(e) => setNewIncome({ ...newIncome, date: e.target.value })}
                                         required
                                     />
                                 </div>
                                 <button type="submit" className="btn btn-pro-max w-100 py-3 shadow-sm">
-                                    <i className="fas fa-plus-circle me-2"></i>Gelir Kaydet
+                                    <i className="fas fa-plus-circle me-2"></i>Kasaya Ekle
                                 </button>
                             </form>
                         </div>
@@ -175,33 +175,32 @@ const Incomes = () => {
                 </div>
 
                 <div className="col-lg-8">
-                    <div className="card card-pro border-0 shadow-sm glass-pro-max overflow-hidden">
+                    <div className="card border-0 shadow-sm rounded-4 overflow-hidden">
                         <div className="card-header bg-white py-3 border-bottom border-light">
                             <div className="d-flex justify-content-between align-items-center">
-                                <h5 className="card-title mb-0">Gelir Geçmişi</h5>
+                                <h5 className="card-title mb-0">Son Hareketler</h5>
                                 <span className="badge bg-light text-dark">{incomes.length} İşlem</span>
                             </div>
                         </div>
                         <div className="card-body p-0">
-                            {incomes.length === 0 ? (
-                                <div className="text-center py-5 text-muted">
-                                    <i className="fas fa-hand-holding-usd fs-1 mb-3 opacity-25"></i>
-                                    <p>Henüz gelir kaydı bulunmuyor.</p>
-                                </div>
-                            ) : (
-                                <div className="table-responsive">
-                                    <table className="table table-hover align-middle mb-0">
-                                        <thead className="bg-light">
+                            <div className="table-responsive">
+                                <table className="table table-hover align-middle mb-0">
+                                    <thead className="bg-light">
+                                        <tr>
+                                            <th className="ps-4 border-0">Tarih</th>
+                                            <th className="border-0">Kategori</th>
+                                            <th className="border-0">Açıklama</th>
+                                            <th className="border-0 text-end pe-4">Tutar</th>
+                                            <th className="border-0 text-center">İşlem</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {incomes.length === 0 ? (
                                             <tr>
-                                                <th className="ps-4 border-0">Tarih</th>
-                                                <th className="border-0">Kategori</th>
-                                                <th className="border-0">Açıklama</th>
-                                                <th className="border-0 text-end pe-4">Tutar</th>
-                                                <th className="border-0 text-center">İşlem</th>
+                                                <td colSpan="5" className="text-center py-5 text-muted">Henüz para girişi kaydedilmemiş.</td>
                                             </tr>
-                                        </thead>
-                                        <tbody>
-                                            {incomes.map(income => (
+                                        ) : (
+                                            incomes.map(income => (
                                                 <tr key={income.id}>
                                                     <td className="ps-4 small text-muted">{new Date(income.date).toLocaleDateString('tr-TR')}</td>
                                                     <td>
@@ -211,7 +210,7 @@ const Incomes = () => {
                                                     </td>
                                                     <td className="fw-medium">{income.description}</td>
                                                     <td className="text-end pe-4 fw-bold text-success">
-                                                        {income.amount.toLocaleString('tr-TR', { style: 'currency', currency: 'TRY' })}
+                                                        + {income.amount.toLocaleString('tr-TR', { style: 'currency', currency: 'TRY' })}
                                                     </td>
                                                     <td className="text-center">
                                                         <button
@@ -222,11 +221,11 @@ const Incomes = () => {
                                                         </button>
                                                     </td>
                                                 </tr>
-                                            ))}
-                                        </tbody>
-                                    </table>
-                                </div>
-                            )}
+                                            ))
+                                        )}
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
                     </div>
                 </div>

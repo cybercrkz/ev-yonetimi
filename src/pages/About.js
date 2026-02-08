@@ -2,12 +2,9 @@ import React from 'react';
 
 function About() {
   return (
-    <div className="container py-5 animate__animated animate__fadeIn">
-      <div className="glass-pro-max p-5 text-center">
-        <i className="fas fa-info-circle fs-1 mb-4 text-primary opacity-50"></i>
-        <h1 className="fw-bold mb-3">Hakkımızda</h1>
-        <p className="text-muted lead">Bu sayfa yapım aşamasındadır. Yakında burada olacağız.</p>
-      </div>
+    <div className="container py-5">
+      <h1>Hakkımızda</h1>
+      <p>Bu sayfa yapım aşamasındadır.</p>
     </div>
   );
 }

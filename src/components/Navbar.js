@@ -23,8 +23,8 @@ const Navbar = () => {
   };
 
   return (
-    <nav className="navbar navbar-expand-lg navbar-dark navbar-floating fixed-top shadow-sm">
-      <div className="container-fluid">
+    <nav className="navbar navbar-expand-lg navbar-dark bg-dark">
+      <div className="container">
         <Link className="navbar-brand" to="/">
           <i className="fas fa-home me-2"></i>Ev Yönetimi
         </Link>
