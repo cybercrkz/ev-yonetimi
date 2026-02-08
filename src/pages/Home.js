@@ -147,34 +147,40 @@ const Home = () => {
   }
 
   return (
-    <div className="container-fluid py-4">
-      <div className="row g-4">
-        {/* Faturalar Özeti */}
-        <div className="col-md-6 col-lg-3">
-          <div className="card shadow h-100 border-0 rounded-4 glass-pro-max">
-            <div className="card-body">
-              <div className="d-flex justify-content-between align-items-center mb-3">
-                <h6 className="card-title mb-0">Toplam Kasa / Gelir</h6>
-                <div className="p-2 rounded-3 bg-success-subtle">
-                  <i className="fas fa-hand-holding-usd fs-4 text-success"></i>
-                </div>
+    <div className="container-fluid py-4 animate__animated animate__fadeIn">
+      {/* Header Section */}
+      <div className="d-flex justify-content-between align-items-center mb-5 px-3">
+        <div>
+          <h1 className="fw-bold text-primary mb-1">Hoş Geldin, {user.email.split('@')[0]}</h1>
+          <p className="text-muted mb-0">İşte evinin bugünkü finansal özeti.</p>
+        </div>
+        <div className="d-flex gap-3">
+          <button className="btn btn-pro-max btn-accent shadow-sm" onClick={fetchStats}>
+            <i className="fas fa-sync-alt"></i>
+          </button>
+        </div>
+      </div>
+
+      <div className="row g-4 mb-5">
+        {/* Kasa Özeti - Ana Kart */}
+        <div className="col-md-6 col-lg-4">
+          <div className="glass-pro-max p-4 h-100 border-0" style={{ background: 'linear-gradient(135deg, #0F172A 0%, #1E293B 100%)', color: 'white' }}>
+            <div className="d-flex justify-content-between align-items-center mb-4">
+              <h5 className="mb-0 opacity-75">Eldeki Nakit</h5>
+              <div className="p-2 rounded-3 bg-white bg-opacity-10">
+                <i className="fas fa-hand-holding-usd fs-4 text-warning"></i>
               </div>
-              <div className="mb-2">
-                <span className="fs-4 fw-bold text-success">
-                  {(stats.incomes?.total || 0).toLocaleString('tr-TR', { style: 'currency', currency: 'TRY' })}
-                </span>
-                <span className="text-muted ms-2 d-block small">Toplam Para Girişi</span>
-              </div>
-              <hr className="my-3 opacity-25" />
-              <div className="d-flex justify-content-between align-items-center mb-1">
-                <small className="text-muted">Eldeki Nakit (Gelir - Gider - Ödenen Fatura)</small>
-                <span className={`fw-bold ${(stats.incomes?.total - stats.expenses?.total - stats.bills?.paid) >= 0 ? 'text-success' : 'text-danger'}`}>
-                  {(stats.incomes?.total - stats.expenses?.total - stats.bills?.paid).toLocaleString('tr-TR', { style: 'currency', currency: 'TRY' })}
-                </span>
-              </div>
+            </div>
+            <div className="mb-4">
+              <h2 className="stat-value text-white mb-1">
+                {(stats.incomes?.total - stats.expenses?.total - stats.bills?.paid).toLocaleString('tr-TR', { style: 'currency', currency: 'TRY' })}
+              </h2>
+              <p className="small opacity-50 mb-0">Gelir - Gider - Ödenen Faturalar</p>
+            </div>
+            <div className="pt-3 border-top border-white border-opacity-10">
               <div className="d-flex justify-content-between align-items-center">
-                <small className="text-muted">Toplam Kalan (Tüm Borçlar Çıkınca)</small>
-                <span className={`small ${(stats.incomes?.total - stats.expenses?.total - stats.bills?.total) >= 0 ? 'text-success' : 'text-danger'}`}>
+                <span className="small opacity-75">Tüm Borçlar Çıkınca:</span>
+                <span className="fw-bold">
                   {(stats.incomes?.total - stats.expenses?.total - stats.bills?.total).toLocaleString('tr-TR', { style: 'currency', currency: 'TRY' })}
                 </span>
               </div>
@@ -183,32 +189,32 @@ const Home = () => {
         </div>
 
         {/* Faturalar Özeti */}
-        <div className="col-md-6 col-lg-3">
-          <div className="card shadow h-100 border-0 rounded-4">
-            <div className="card-body">
-              <div className="d-flex justify-content-between align-items-center mb-3">
-                <h6 className="card-title mb-0">Faturalar</h6>
-                <i className="fas fa-file-invoice-dollar fs-4 text-primary"></i>
+        <div className="col-md-6 col-lg-4">
+          <div className="card card-pro p-4 h-100 border-0 shadow-sm glass-pro-max">
+            <div className="card-body p-0">
+              <div className="d-flex justify-content-between align-items-center mb-4">
+                <h5 className="mb-0 text-dark">Faturalar</h5>
+                <div className="p-2 rounded-3 bg-primary bg-opacity-10 text-primary">
+                  <i className="fas fa-file-invoice-dollar fs-4"></i>
+                </div>
               </div>
-              <div className="mb-2">
-                <span className="fs-4 fw-bold text-primary">
+              <div className="mb-3">
+                <h2 className="stat-value text-primary mb-1">
                   {stats.bills.total.toLocaleString('tr-TR', { style: 'currency', currency: 'TRY' })}
-                </span>
-                <span className="text-muted ms-2">Toplam</span>
+                </h2>
+                <p className="small text-muted mb-0">Toplam Fatura Yükü</p>
               </div>
-              <div className="d-flex justify-content-between">
+              <div className="d-flex gap-4">
                 <div>
-                  <span className="text-success">
+                  <span className="text-success fw-bold d-block">
                     {stats.bills.paid.toLocaleString('tr-TR', { style: 'currency', currency: 'TRY' })}
                   </span>
-                  <br />
                   <small className="text-muted">Ödenen</small>
                 </div>
-                <div className="text-end">
-                  <span className="text-danger">
+                <div>
+                  <span className="text-danger fw-bold d-block">
                     {stats.bills.pending.toLocaleString('tr-TR', { style: 'currency', currency: 'TRY' })}
                   </span>
-                  <br />
                   <small className="text-muted">Bekleyen</small>
                 </div>
               </div>
@@ -217,156 +223,116 @@ const Home = () => {
         </div>
 
         {/* Giderler Özeti */}
-        <div className="col-md-6 col-lg-3">
-          <div className="card shadow h-100">
-            <div className="card-body">
-              <div className="d-flex justify-content-between align-items-center mb-3">
-                <h6 className="card-title mb-0">Giderler</h6>
-                <i className="fas fa-wallet fs-4 text-success"></i>
+        <div className="col-md-6 col-lg-4">
+          <div className="card card-pro p-4 h-100 border-0 shadow-sm glass-pro-max">
+            <div className="card-body p-0">
+              <div className="d-flex justify-content-between align-items-center mb-4">
+                <h5 className="mb-0 text-dark">Giderler</h5>
+                <div className="p-2 rounded-3 bg-success bg-opacity-10 text-success">
+                  <i className="fas fa-wallet fs-4"></i>
+                </div>
               </div>
-              <div className="mb-2">
-                <span className="fs-4 fw-bold text-success">
+              <div className="mb-3">
+                <h2 className="stat-value text-success mb-1">
                   {stats.expenses.total.toLocaleString('tr-TR', { style: 'currency', currency: 'TRY' })}
-                </span>
-                <span className="text-muted ms-2">Toplam</span>
+                </h2>
+                <p className="small text-muted mb-0">Aylık Harcama</p>
               </div>
-              <div className="small">
-                {Object.entries(stats.expenses.categories).map(([category, amount]) => (
+              <div className="small overflow-hidden" style={{ maxHeight: '60px' }}>
+                {Object.entries(stats.expenses.categories).slice(0, 2).map(([category, amount]) => (
                   <div key={category} className="d-flex justify-content-between mb-1">
-                    <span>{category}</span>
-                    <span>{amount.toLocaleString('tr-TR', { style: 'currency', currency: 'TRY' })}</span>
+                    <span className="text-muted">{category}:</span>
+                    <span className="fw-bold">{amount.toLocaleString('tr-TR', { style: 'currency', currency: 'TRY' })}</span>
                   </div>
                 ))}
               </div>
             </div>
           </div>
         </div>
+      </div>
 
-        {/* Yapılacaklar Özeti */}
-        <div className="col-md-6 col-lg-3">
-          <div className="card shadow h-100">
-            <div className="card-body">
-              <div className="d-flex justify-content-between align-items-center mb-3">
-                <h6 className="card-title mb-0">Yapılacaklar</h6>
-                <i className="fas fa-tasks fs-4 text-warning"></i>
+      <div className="row g-4">
+        {/* Market ve Yapılacaklar - Küçük Kartlar */}
+        <div className="col-lg-3">
+          <div className="card card-pro mb-4 border-0 shadow-sm p-4 glass-pro-max">
+            <div className="d-flex justify-content-between align-items-center mb-3">
+              <h6 className="mb-0">Yapılacaklar</h6>
+              <i className="fas fa-tasks text-warning"></i>
+            </div>
+            <div className="d-flex justify-content-between align-items-end">
+              <h3 className="stat-value mb-0 text-warning">{stats.todos.total}</h3>
+              <div className="text-end">
+                <small className="text-success d-block">{stats.todos.completed} Bitti</small>
+                <small className="text-danger d-block">{stats.todos.pending} Kaldı</small>
               </div>
-              <div className="mb-2">
-                <span className="fs-4 fw-bold text-warning">{stats.todos.total}</span>
-                <span className="text-muted ms-2">Toplam</span>
-              </div>
-              <div className="d-flex justify-content-between">
-                <div>
-                  <span className="text-success">{stats.todos.completed}</span>
-                  <br />
-                  <small className="text-muted">Tamamlanan</small>
-                </div>
-                <div className="text-end">
-                  <span className="text-danger">{stats.todos.pending}</span>
-                  <br />
-                  <small className="text-muted">Bekleyen</small>
-                </div>
+            </div>
+          </div>
+          <div className="card card-pro border-0 shadow-sm p-4 glass-pro-max">
+            <div className="d-flex justify-content-between align-items-center mb-3">
+              <h6 className="mb-0">Market Listesi</h6>
+              <i className="fas fa-shopping-basket text-info"></i>
+            </div>
+            <div className="d-flex justify-content-between align-items-end">
+              <h3 className="stat-value mb-0 text-info">{stats.shoppingItems.total}</h3>
+              <div className="text-end">
+                <small className="text-success d-block">{stats.shoppingItems.completed} Alındı</small>
+                <small className="text-danger d-block">{stats.shoppingItems.pending} Eksik</small>
               </div>
             </div>
           </div>
         </div>
 
-        {/* Market Listesi Özeti */}
-        <div className="col-md-6 col-lg-3">
-          <div className="card shadow h-100">
-            <div className="card-body">
-              <div className="d-flex justify-content-between align-items-center mb-3">
-                <h6 className="card-title mb-0">Market Listesi</h6>
-                <i className="fas fa-shopping-basket fs-4 text-info"></i>
-              </div>
-              <div className="mb-2">
-                <span className="fs-4 fw-bold text-info">{stats.shoppingItems.total}</span>
-                <span className="text-muted ms-2">Toplam</span>
-              </div>
-              <div className="d-flex justify-content-between">
-                <div>
-                  <span className="text-success">{stats.shoppingItems.completed}</span>
-                  <br />
-                  <small className="text-muted">Alınan</small>
-                </div>
-                <div className="text-end">
-                  <span className="text-danger">{stats.shoppingItems.pending}</span>
-                  <br />
-                  <small className="text-muted">Bekleyen</small>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Gider Dağılımı Grafiği */}
-        <div className="col-md-6">
-          <div className="card shadow">
-            <div className="card-body">
-              <h6 className="card-title mb-3">Gider Dağılımı</h6>
-              <div style={{ height: '300px' }}>
-                <Doughnut
-                  data={{
-                    labels: Object.keys(stats.expenses.categories),
-                    datasets: [
-                      {
-                        data: Object.values(stats.expenses.categories),
-                        backgroundColor: [
-                          '#4e73df',
-                          '#1cc88a',
-                          '#36b9cc',
-                          '#f6c23e',
-                          '#e74a3b',
-                          '#858796',
-                        ],
-                      },
-                    ],
-                  }}
-                  options={{
-                    maintainAspectRatio: false,
-                    plugins: {
-                      legend: {
-                        position: 'bottom',
-                      },
+        {/* Gider Grafiği */}
+        <div className="col-lg-5">
+          <div className="card card-pro border-0 shadow-sm p-4 glass-pro-max h-100">
+            <h5 className="card-title mb-4">Harcama Dağılımı</h5>
+            <div style={{ height: '300px' }}>
+              <Doughnut
+                data={{
+                  labels: Object.keys(stats.expenses.categories),
+                  datasets: [
+                    {
+                      data: Object.values(stats.expenses.categories),
+                      backgroundColor: ['#0F172A', '#CA8A04', '#1E293B', '#B45309', '#64748B', '#94A3B8'],
+                      borderWidth: 0,
+                      hoverOffset: 10
                     },
-                  }}
-                />
-              </div>
+                  ],
+                }}
+                options={{
+                  maintainAspectRatio: false,
+                  cutout: '70%',
+                  plugins: {
+                    legend: { position: 'bottom', labels: { usePointStyle: true, boxWidth: 10, font: { family: 'Inter', size: 12 } } },
+                  },
+                }}
+              />
             </div>
           </div>
         </div>
 
         {/* Yaklaşan Faturalar */}
-        <div className="col-md-6">
-          <div className="card shadow">
-            <div className="card-body">
-              <h6 className="card-title mb-3">Yaklaşan Faturalar</h6>
-              <div className="table-responsive">
-                <table className="table table-hover">
-                  <thead>
-                    <tr>
-                      <th>Fatura</th>
-                      <th>Tutar</th>
-                      <th>Son Ödeme</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {upcomingBills.map((bill) => (
-                      <tr key={bill.id}>
-                        <td>{bill.description}</td>
-                        <td>{bill.amount.toLocaleString('tr-TR', { style: 'currency', currency: 'TRY' })}</td>
-                        <td>{new Date(bill.due_date).toLocaleDateString('tr-TR')}</td>
-                      </tr>
-                    ))}
-                    {upcomingBills.length === 0 && (
-                      <tr>
-                        <td colSpan="3" className="text-center text-muted">
-                          Yaklaşan fatura bulunmuyor
-                        </td>
-                      </tr>
-                    )}
-                  </tbody>
-                </table>
-              </div>
+        <div className="col-lg-4">
+          <div className="card card-pro border-0 shadow-sm p-4 glass-pro-max h-100">
+            <h5 className="card-title mb-4">Yaklaşan Faturalar</h5>
+            <div className="list-group list-group-flush">
+              {upcomingBills.map((bill) => (
+                <div key={bill.id} className="list-group-item bg-transparent px-0 border-light d-flex justify-content-between align-items-center">
+                  <div>
+                    <h6 className="mb-0 fw-bold">{bill.bill_type}</h6>
+                    <small className="text-muted">{new Date(bill.due_date).toLocaleDateString('tr-TR')}</small>
+                  </div>
+                  <span className="badge bg-light text-primary rounded-pill px-3 py-2 fw-bold">
+                    {bill.amount.toLocaleString('tr-TR', { style: 'currency', currency: 'TRY' })}
+                  </span>
+                </div>
+              ))}
+              {upcomingBills.length === 0 && (
+                <div className="text-center py-5 text-muted">
+                  <i className="fas fa-check-circle fs-1 mb-3 opacity-25"></i>
+                  <p>Ödenmeyi bekleyen fatura yok!</p>
+                </div>
+              )}
             </div>
           </div>
         </div>

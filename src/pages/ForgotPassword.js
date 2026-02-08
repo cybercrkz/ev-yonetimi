@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { browserAuth } from '../lib/browserAuth';
+import { supabase } from '../lib/supabase';
 
 const ForgotPassword = () => {
   const [email, setEmail] = useState('');
@@ -13,7 +13,9 @@ const ForgotPassword = () => {
     setMessage({ text: '', type: '' });
 
     try {
-      const { error } = await browserAuth.resetPasswordForEmail(email);
+      const { error } = await supabase.auth.resetPasswordForEmail(email, {
+        redirectTo: `${window.location.origin}/reset-password`,
+      });
       if (error) throw error;
 
       setMessage({
@@ -38,7 +40,7 @@ const ForgotPassword = () => {
           <div className="card shadow">
             <div className="card-body">
               <h2 className="card-title text-center mb-4">Şifremi Unuttum</h2>
-              
+
               {message.text && (
                 <div className={`alert alert-${message.type === 'success' ? 'success' : 'danger'} mb-4`}>
                   {message.text}
@@ -74,7 +76,7 @@ const ForgotPassword = () => {
                       'Şifre Sıfırlama Bağlantısı Gönder'
                     )}
                   </button>
-                  
+
                   <Link to="/login" className="btn btn-outline-secondary">
                     Giriş Sayfasına Dön
                   </Link>
