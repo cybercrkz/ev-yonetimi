@@ -120,7 +120,6 @@ const Expenses = () => {
   }
 
   const totalsByCategory = calculateTotalsByCategory();
-  const totalsByPaymentMethod = calculateTotalsByPaymentMethod();
   const grandTotal = Object.values(totalsByCategory).reduce((a, b) => a + b, 0);
 
   return (
