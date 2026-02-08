@@ -60,6 +60,23 @@ const ProfileClean = () => {
     }
   };
 
+  const handleResetSystem = async () => {
+    if (window.confirm('TÜM verileriniz silinecek (faturalar, giderler, yapılacaklar, profil). Bu işlem geri alınamaz. Emin misiniz?')) {
+      setLoading(true);
+      try {
+        await browserData.clearAllData();
+        setMessage({ text: 'Sistem başarıyla sıfırlandı. Sayfa yenileniyor...', type: 'success' });
+        setTimeout(() => {
+          window.location.reload();
+        }, 1500);
+      } catch (err) {
+        setMessage({ text: 'Sıfırlama sırasında hata: ' + err.message, type: 'error' });
+      } finally {
+        setLoading(false);
+      }
+    }
+  };
+
   if (loadingProfile) return (
     <div className="container py-5"><div className="row justify-content-center"><div className="col-md-8"><div className="card shadow"><div className="card-body text-center py-5"><div className="spinner-border text-primary" role="status"><span className="visually-hidden">Yükleniyor...</span></div><p className="mt-3 mb-0">Profil bilgileri yükleniyor...</p></div></div></div></div></div>
   );
@@ -96,6 +113,22 @@ const ProfileClean = () => {
                   <button type="submit" className="btn btn-primary" disabled={loading}>{loading ? (<><span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>Güncelleniyor...</>) : 'Bilgileri Güncelle'}</button>
                 </div>
               </form>
+
+              <hr className="my-5" />
+
+              <div className="reset-section">
+                <h4 className="text-danger mb-3">Tehlikeli Bölge</h4>
+                <p className="text-muted small">
+                  Aşağıdaki buton sistemdeki tüm verilerinizi (faturalar, giderler, vb.) kalıcı olarak siler ve ilk haline getirir.
+                </p>
+                <button
+                  onClick={handleResetSystem}
+                  className="btn btn-outline-danger w-100"
+                  disabled={loading}
+                >
+                  {loading ? 'İşlem yapılıyor...' : 'Tüm Verileri Sil ve Sistemi Sıfırla'}
+                </button>
+              </div>
             </div>
           </div>
         </div>

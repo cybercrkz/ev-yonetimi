@@ -69,7 +69,7 @@ const saveTableGeneric = (table, data) => writeJSON(KEY_PREFIX + table, data);
 const insertInto = async (table, rows) => {
   const data = loadTableGeneric(table);
   const inserted = rows.map(row => {
-    const id = `${table.slice(0,3)}_${Date.now()}_${Math.floor(Math.random()*1000)}`;
+    const id = `${table.slice(0, 3)}_${Date.now()}_${Math.floor(Math.random() * 1000)}`;
     const now = new Date().toISOString();
     return { id, ...row, created_at: now, updated_at: now };
   });
@@ -119,9 +119,20 @@ const upsertProfile = async (profile) => {
   return { error: null };
 };
 
+const clearAllData = async () => {
+  const PRESERVE_KEYS = ['ev_users', 'ev_session'];
+  Object.keys(localStorage).forEach(key => {
+    if (key.startsWith(KEY_PREFIX) && !PRESERVE_KEYS.includes(key)) {
+      localStorage.removeItem(key);
+    }
+  });
+  return { error: null };
+};
+
 // extend export
 browserData.insertInto = insertInto;
 browserData.updateById = updateById;
 browserData.deleteById = deleteById;
 browserData.getProfileById = getProfileById;
 browserData.upsertProfile = upsertProfile;
+browserData.clearAllData = clearAllData;

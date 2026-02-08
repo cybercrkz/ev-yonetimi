@@ -25,104 +25,105 @@ const Login = () => {
   };
 
   return (
-    <div className="min-vh-100 d-flex align-items-center bg-light py-5">
-      <div className="container">
-        <div className="row justify-content-center">
-          <div className="col-12 col-md-8 col-lg-6 col-xl-5">
-            <div className="card border-0 shadow-lg">
-              <div className="card-body p-5">
-                {/* Logo ve Başlık */}
-                <div className="text-center mb-4">
-                  <i className="fas fa-home fa-3x text-primary mb-3"></i>
-                  <h2 className="fw-bold">Ev Yönetimi</h2>
-                  <p className="text-muted">Hesabınıza giriş yapın</p>
-                </div>
+    <div className="min-vh-100 d-flex bg-white">
+      {/* Sol Panel: Giriş Formu */}
+      <div className="col-12 col-lg-5 d-flex align-items-center justify-content-center p-4 p-md-5">
+        <div className="w-100" style={{ maxWidth: '400px' }}>
+          <div className="text-center mb-5">
+            <div className="d-inline-block p-3 rounded-circle bg-light mb-3">
+              <i className="fas fa-home fa-2x text-primary"></i>
+            </div>
+            <h2 className="fw-bold text-dark">Ev Yönetimi</h2>
+            <p className="text-muted">Pro Max Deneyimine Giriş Yapın</p>
+          </div>
 
-                {/* Hata Mesajı */}
-                {error && (
-                  <div className="alert alert-danger d-flex align-items-center" role="alert">
-                    <i className="fas fa-exclamation-circle me-2"></i>
-                    {error}
-                  </div>
+          {error && (
+            <div className="alert alert-danger border-0 glass-pro-max text-danger mb-4" role="alert">
+              <i className="fas fa-exclamation-circle me-2"></i>
+              {error}
+            </div>
+          )}
+
+          <form onSubmit={handleSubmit}>
+            <div className="form-floating mb-3">
+              <input
+                type="email"
+                className="form-control bg-light border-0"
+                id="email"
+                placeholder="name@example.com"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+                style={{ borderRadius: '12px' }}
+              />
+              <label htmlFor="email">E-posta adresi</label>
+            </div>
+
+            <div className="form-floating mb-4">
+              <input
+                type="password"
+                className="form-control bg-light border-0"
+                id="password"
+                placeholder="Şifre"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+                style={{ borderRadius: '12px' }}
+              />
+              <label htmlFor="password">Şifre</label>
+            </div>
+
+            <div className="d-grid">
+              <button
+                type="submit"
+                className="btn btn-pro-max btn-lg py-3"
+                disabled={loading}
+              >
+                {loading ? (
+                  <>
+                    <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                    Giriş yapılıyor...
+                  </>
+                ) : (
+                  'Hesabıma Giriş Yap'
                 )}
-
-                {/* Giriş Formu */}
-                <form onSubmit={handleSubmit}>
-                  <div className="form-floating mb-3">
-                    <input
-                      type="email"
-                      className="form-control"
-                      id="email"
-                      placeholder="name@example.com"
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
-                      required
-                    />
-                    <label htmlFor="email">E-posta adresi</label>
-                  </div>
-
-                  <div className="form-floating mb-4">
-                    <input
-                      type="password"
-                      className="form-control"
-                      id="password"
-                      placeholder="Şifre"
-                      value={password}
-                      onChange={(e) => setPassword(e.target.value)}
-                      required
-                    />
-                    <label htmlFor="password">Şifre</label>
-                  </div>
-
-                  <div className="d-grid">
-                    <button
-                      type="submit"
-                      className="btn btn-primary btn-lg"
-                      disabled={loading}
-                    >
-                      {loading ? (
-                        <>
-                          <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
-                          Giriş yapılıyor...
-                        </>
-                      ) : (
-                        'Giriş Yap'
-                      )}
-                    </button>
-                  </div>
-                </form>
-
-                {/* Alt Linkler */}
-                <div className="text-center mt-4">
-                  <Link to="/forgot-password" className="text-decoration-none">
-                    Şifremi unuttum
-                  </Link>
-                  <hr className="my-4" />
-                  <p className="mb-0">
-                    Hesabınız yok mu?{' '}
-                    <Link to="/register" className="text-decoration-none fw-bold">
-                      Hemen kaydolun
-                    </Link>
-                  </p>
-                </div>
-              </div>
+              </button>
             </div>
+          </form>
 
-            {/* Sosyal Medya Butonları */}
-            <div className="text-center mt-4">
-              <p className="text-muted mb-4">Sosyal medya ile giriş yapın</p>
-              <div className="d-flex justify-content-center gap-3">
-                <button className="btn btn-outline-dark btn-lg rounded-circle">
-                  <i className="fab fa-google"></i>
-                </button>
-                <button className="btn btn-outline-dark btn-lg rounded-circle">
-                  <i className="fab fa-facebook-f"></i>
-                </button>
-                <button className="btn btn-outline-dark btn-lg rounded-circle">
-                  <i className="fab fa-twitter"></i>
-                </button>
-              </div>
-            </div>
+          <div className="text-center mt-5">
+            <p className="mb-0 text-muted">
+              Hesabınız yok mu?{' '}
+              <Link to="/register" className="text-primary text-decoration-none fw-bold">
+                Ücretsiz Kaydolun
+              </Link>
+            </p>
+          </div>
+        </div>
+      </div>
+
+      {/* Sağ Panel: Görsel */}
+      <div className="d-none d-lg-block col-lg-7 p-4">
+        <div
+          className="w-100 h-100 rounded-4 shadow-lg"
+          style={{
+            backgroundImage: `url('/assets/login-bg.png')`,
+            backgroundSize: 'cover',
+            backgroundPosition: 'center',
+            minHeight: '600px',
+            position: 'relative',
+            overflow: 'hidden'
+          }}
+        >
+          <div
+            className="position-absolute bottom-0 start-0 p-5 w-100"
+            style={{
+              background: 'linear-gradient(to top, rgba(0,0,0,0.7), transparent)',
+              color: 'white'
+            }}
+          >
+            <h3 className="fw-bold mb-2">Evinizin Kontrolü Sizin Elinizde</h3>
+            <p className="opacity-75 mb-0">Faturalar, giderler ve planlar artık daha düzenli ve şık.</p>
           </div>
         </div>
       </div>
