@@ -166,9 +166,15 @@ const Home = () => {
                 <span className="text-muted ms-2 d-block small">Toplam Para Girişi</span>
               </div>
               <hr className="my-3 opacity-25" />
+              <div className="d-flex justify-content-between align-items-center mb-1">
+                <small className="text-muted">Eldeki Nakit (Gelir - Gider - Ödenen Fatura)</small>
+                <span className={`fw-bold ${(stats.incomes?.total - stats.expenses?.total - stats.bills?.paid) >= 0 ? 'text-success' : 'text-danger'}`}>
+                  {(stats.incomes?.total - stats.expenses?.total - stats.bills?.paid).toLocaleString('tr-TR', { style: 'currency', currency: 'TRY' })}
+                </span>
+              </div>
               <div className="d-flex justify-content-between align-items-center">
-                <small className="text-muted">Net Durum</small>
-                <span className={`fw-bold ${(stats.incomes?.total - stats.expenses?.total - stats.bills?.total) >= 0 ? 'text-success' : 'text-danger'}`}>
+                <small className="text-muted">Toplam Kalan (Tüm Borçlar Çıkınca)</small>
+                <span className={`small ${(stats.incomes?.total - stats.expenses?.total - stats.bills?.total) >= 0 ? 'text-success' : 'text-danger'}`}>
                   {(stats.incomes?.total - stats.expenses?.total - stats.bills?.total).toLocaleString('tr-TR', { style: 'currency', currency: 'TRY' })}
                 </span>
               </div>
